@@ -48,7 +48,7 @@ td a{color:var(--accent);text-decoration:none;white-space:nowrap}
   <h1>Q1 Expense Reports</h1>
   <div class="sub">Your Mates Brewing Co. · Q1 FY27 (Jul–Sep 2026) · All figures ex-GST from Xero, against the Your Mates Xero File Budget</div>
 
-  <div class="alert"><b>Before sharing Q1 profit:</b> Q1 cost of goods isn't fully booked yet. There's no brewing materials cost, no September excise, almost no Container Refund Scheme cost and no depreciation, likely $400k+ in total. Operations and Shared Expenses look under budget mainly because of this.</div>
+  <div class="alert"><b>Before sharing Q1 profit:</b> brewing materials, September excise and the Container Refund Scheme are now posted (8–9 Nov). Still missing: depreciation (about $94k a quarter). Shared Expenses looks under budget mainly because of this.</div>
 
   <h2>Department reports</h2>
   <div class="grid" id="cards"></div>
@@ -56,8 +56,8 @@ td a{color:var(--accent);text-decoration:none;white-space:nowrap}
   <h2>Top items to action across departments</h2>
   <div class="scroll"><table>
     <tr><th>Department</th><th>Issue</th><th class="n">Amount</th><th></th></tr>
-    <tr><td>Operations</td><td>Brewing materials, September excise and QLD Container Refund Scheme not booked for Q1</td><td>$400k+</td><td><a href="Operations-Expense-Report-Q1-FY27.html">Open →</a></td></tr>
     <tr><td>Shared Expenses</td><td>No depreciation booked in Q1 (last year ~$94k a quarter)</td><td>~$94k</td><td><a href="Shared-Expenses-Report-Q1-FY27.html">Open →</a></td></tr>
+    <tr><td>Operations</td><td>Brewing materials up 4% while excise (volume) fell 13% – check can prices, wastage and stock count</td><td>$303.9k</td><td><a href="Operations-Expense-Report-Q1-FY27.html">Open →</a></td></tr>
     <tr><td>Sales</td><td>Sunshine Coast Lightning invoice for FY26 games booked in July (cut-off)</td><td>$28.9k</td><td><a href="Sales-Expense-Report-Q1-FY27.html">Open →</a></td></tr>
     <tr><td>Shared Expenses</td><td>Payroll tax: FY26 refund nets Q1 to a credit; July paid twice</td><td>$27.6k</td><td><a href="Shared-Expenses-Report-Q1-FY27.html">Open →</a></td></tr>
     <tr><td>Shared Expenses</td><td>Management wages in an account with no department</td><td>$25.5k</td><td><a href="Shared-Expenses-Report-Q1-FY27.html">Open →</a></td></tr>
@@ -66,6 +66,7 @@ td a{color:var(--accent);text-decoration:none;white-space:nowrap}
     <tr><td>Brew Pub</td><td>Extra RWC rent invoice on 15 Sep, on top of normal rent</td><td>$5.2k</td><td><a href="Brew-Pub-Expense-Report-Q1-FY27.html">Open →</a></td></tr>
     <tr><td>Sales</td><td>28 Sep pay run: annual leave paid on top of a full week</td><td>$2.7k</td><td><a href="Sales-Expense-Report-Q1-FY27.html">Open →</a></td></tr>
     <tr><td>Operations</td><td>Fourth Beer30 subscription charge in one quarter – possible duplicate</td><td>$2.6k</td><td><a href="Operations-Expense-Report-Q1-FY27.html">Open →</a></td></tr>
+    <tr><td>Operations</td><td>NSW cans may be counted twice: in the CRS journals and the NSW Exchange for Change bill</td><td>$627–885</td><td><a href="Operations-Expense-Report-Q1-FY27.html">Open →</a></td></tr>
     <tr><td>Brew Pub / Shared</td><td>Annual liquor licence fee booked in both Brew Pub and Shared</td><td>$833</td><td><a href="Brew-Pub-Expense-Report-Q1-FY27.html">Open →</a></td></tr>
   </table></div>
 
@@ -77,8 +78,8 @@ const REPORTS=[
   note:"Underlying $114.4k excl. a $28.9k FY26 Lightning invoice. Event revenue booked as expense; overlapping software."},
  {dept:"Brew Pub",file:"Brew-Pub-Expense-Report-Q1-FY27.html",key:"ymb-brewpub-q1fy27-v1-orig",q1:133003,bud:126541,py:122481,
   note:"Operating expenses only (no cost of sales). Rent +$13.1k; music, equipment and print over budget."},
- {dept:"Operations",file:"Operations-Expense-Report-Q1-FY27.html",key:"ymb-ops-q1fy27-v1-orig",q1:614038,bud:1181874,py:1187681,
-  note:"Production + Logistics. Under budget only because Q1 cost of goods isn't fully booked."},
+ {dept:"Operations (overheads)",file:"Operations-Expense-Report-Q1-FY27.html",key:"ymb-ops-q1fy27-v1-orig",q1:390243,bud:422583,py:448207,
+  note:"Excludes volume-driven cost of goods (excise, CRS, materials): $690.7k, −7% vs Q1 FY26 while volume is down 13%."},
  {dept:"Shared Expenses",file:"Shared-Expenses-Report-Q1-FY27.html",key:"ymb-shared-q1fy27-v1-orig",q1:210671,bud:233588,py:341809,
   note:"Incl. management wages and overheads. Interest $42.3k (vs $4.7k); no depreciation booked."}
 ];
