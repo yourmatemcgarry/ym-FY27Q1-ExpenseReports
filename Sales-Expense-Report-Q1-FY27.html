@@ -1,0 +1,701 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sales Expense Report Q1 FY27</title>
+<style>
+:root{
+  --bg:#f6f5f2;--panel:#ffffff;--ink:#1d1d1b;--muted:#6b6a65;--line:#e4e2dc;--soft:#f0efea;
+  --accent:#1f5f8b;--accent-soft:#e7f1fb;
+  --fix:#b42318;--fix-bg:#fdecea;--check:#b54708;--check-bg:#fdf0e3;--price:#8a6100;--price-bg:#fbf3d9;
+  --cut:#5b45c2;--cut-bg:#efedff;--rcpt:#55534e;--rcpt-bg:#eeede9;--ok:#1d7a3e;--ok-bg:#e5f4e4;
+  --act:#b42318;--act-bg:#fff4f2;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#151513;--panel:#1e1e1b;--ink:#ecebe6;--muted:#a3a19a;--line:#33322e;--soft:#26251f;
+  --accent:#7fb6e0;--accent-soft:#1c2b38;
+  --fix:#ff8a7a;--fix-bg:#3a1d19;--check:#f6b26b;--check-bg:#3a2a17;--price:#e8c768;--price-bg:#352c12;
+  --cut:#b3a6ff;--cut-bg:#28234a;--rcpt:#c9c7c0;--rcpt-bg:#2c2b27;--ok:#7fd49a;--ok-bg:#1b3323;
+  --act:#ff8a7a;--act-bg:#2d1a17;
+}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+.wrap{max-width:1240px;margin:0 auto;padding:24px 16px 80px}
+h1{font-size:26px;margin:0 0 4px;letter-spacing:-.01em}
+h2{font-size:19px;margin:36px 0 6px}
+h3{font-size:15px;margin:0}
+p{margin:6px 0}
+.sub{color:var(--muted);font-size:13px}
+.lead{font-size:15px;max-width:900px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin:18px 0}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.kpi .l{font-size:12px;color:var(--muted)}
+.kpi .v{font-size:22px;font-weight:650;font-variant-numeric:tabular-nums}
+.kpi .d{font-size:12px;color:var(--muted)}
+.good{color:var(--ok)}.bad{color:var(--fix)}
+.bar{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line);padding:10px 0;margin:0 0 6px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.bar input[type=search]{flex:1;min-width:180px;padding:7px 10px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--ink);font:inherit}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg button{border:0;background:var(--panel);color:var(--ink);padding:7px 11px;font:inherit;cursor:pointer}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button.on{background:var(--accent);color:#fff}
+.btn{border:1px solid var(--line);background:var(--panel);color:var(--ink);padding:7px 11px;border-radius:8px;font:inherit;cursor:pointer}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{font-weight:600;color:var(--act)}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-top:10px}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{padding:7px 9px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{background:var(--soft);font-weight:600;font-size:12px;color:var(--muted);white-space:nowrap}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+tr.total td{font-weight:650;background:var(--soft)}
+tr.actioned td{background:var(--act-bg)}
+tr.actioned td:first-child{box-shadow:inset 3px 0 0 var(--act)}
+td.act{width:92px;white-space:nowrap}
+td.note{min-width:180px;width:22%}
+.act label{display:inline-flex;gap:5px;align-items:center;cursor:pointer;font-size:12px;color:var(--muted)}
+.act input{width:16px;height:16px;accent-color:var(--act);cursor:pointer}
+tr.actioned .act label{color:var(--act);font-weight:600}
+textarea.nt{width:100%;min-height:30px;resize:vertical;border:1px solid transparent;border-radius:6px;background:transparent;color:var(--ink);font:12px/1.4 inherit;font-family:inherit;padding:5px 6px}
+textarea.nt:hover{border-color:var(--line)}
+textarea.nt:focus{outline:none;border-color:var(--accent);background:var(--panel)}
+textarea.nt.has{background:var(--accent-soft);border-color:transparent}
+.badge{display:inline-block;padding:1px 7px;border-radius:999px;font-size:11.5px;font-weight:600;line-height:1.6;white-space:normal}
+.b-fix{background:var(--fix-bg);color:var(--fix)}.b-check{background:var(--check-bg);color:var(--check)}
+.b-price{background:var(--price-bg);color:var(--price)}.b-cut{background:var(--cut-bg);color:var(--cut)}
+.b-rcpt{background:var(--rcpt-bg);color:var(--rcpt)}.b-info{background:var(--ok-bg);color:var(--ok)}
+details.acct{background:var(--panel);border:1px solid var(--line);border-radius:10px;margin-top:8px;overflow:hidden}
+details.acct summary{cursor:pointer;padding:10px 12px;display:flex;gap:10px;align-items:center;list-style:none;flex-wrap:wrap}
+details.acct summary::-webkit-details-marker{display:none}
+details.acct summary::before{content:"▸";color:var(--muted);transition:transform .15s}
+details.acct[open] summary::before{transform:rotate(90deg)}
+details.acct summary .amt{margin-left:auto;font-weight:650;font-variant-numeric:tabular-nums}
+details.acct .anote{padding:0 12px 8px;color:var(--muted);font-size:13px}
+.pill{font-size:11.5px;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:0 7px}
+.pill.f{color:var(--fix);border-color:var(--fix-bg);background:var(--fix-bg)}
+.pill.a{color:#fff;background:var(--act);border-color:var(--act)}
+.legend{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.hide{display:none!important}
+.foot{margin-top:28px;color:var(--muted);font-size:12px}
+.saved{font-size:12px;color:var(--muted)}
+@media print{
+  .bar,.noprint{display:none!important}
+  body{background:#fff}
+  details.acct{break-inside:avoid}
+  textarea.nt{border:0;background:none!important}
+}
+@media (max-width:640px){h1{font-size:21px}.kpi .v{font-size:19px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back noprint" href="./" style="display:inline-block;margin-bottom:10px;font-size:13px;color:var(--accent);text-decoration:none">← All Q1 FY27 expense reports</a>
+  <h1>Sales Department Expense Report – Q1 FY27</h1>
+  <div class="sub">Your Mates Brewing Co. · Jul–Sep 2026 · Prepared 1 Nov 2026 for Christen McGarry · All figures ex-GST from Xero</div>
+
+  <div class="kpis" id="kpis"></div>
+
+  <p class="lead">The Sales department spent <b>$143.3k</b> in Q1 FY27: <b>$52.0k (27%) under</b> the $195.3k budget and 4% above Q1 FY26 ($138.2k). The total includes a $28.9k Sunshine Coast Lightning invoice for FY26 games, booked on 15 Jul. Without it, underlying spend was <b>$114.4k, 17% below last year</b>.</p>
+  <p class="lead">Most urgent: event revenue is being booked as negative expense, the 28 Sep pay run looks like it paid leave on top of a full week, and two possible duplicates need checking (Amarok service, Nexburg coolers). Overlapping software subscriptions are the clearest saving.</p>
+
+  <div class="bar noprint">
+    <input type="search" id="q" placeholder="Search transactions, suppliers, notes…">
+    <div class="seg" id="view">
+      <button data-v="all" class="on">All</button>
+      <button data-v="flagged">Flagged</button>
+      <button data-v="action">Please action <span id="cnt2"></span></button>
+      <button data-v="notes">With notes</button>
+    </div>
+    <span class="count" id="cnt"></span>
+    <button class="btn" id="expand">Expand all</button>
+    <button class="btn" id="csv">Export action list (CSV)</button>
+    <button class="btn primary" id="savecopy">Save copy with notes</button>
+    <button class="btn" onclick="window.print()">Print</button>
+    <span class="saved" id="saved"></span>
+  </div>
+
+  <h2>Account summary</h2>
+  <p class="sub">Each Sales account vs last quarter, the same quarter last year and the Your Mates Xero File Budget, sorted by Q1 spend.</p>
+  <div class="card scroll"><table id="summary"></table></div>
+  <p class="sub" style="margin-top:8px">Q4 FY26 is understated by $45.0k of credits from Your Mates Bowls Pub for Sunshine Coast Lightning bar operations, booked against Events; excluding them, Q4 spend was $119.9k, so Q1 is up 20% on Q4. The budget looks set on a different basis in places: Freight ($34.0k), Trade Spend Beer ($22.7k) and Digital Ads ($20.0k) sit well above any recent quarter; on-costs are budgeted at ~27% of wages but run at 12% (super only); Bonus, Annual Leave and Design &amp; Content have no budget.</p>
+
+  <h2>Incorrect or miscoded transactions</h2>
+  <p class="sub">Twelve items to fix or check, most important first. The Lightning cut-off ($28.9k) alone moves the quarter by 20%.</p>
+  <div class="card scroll"><table id="issues"></table></div>
+  <p class="sub" style="margin-top:8px">Smaller recodes: Stradbroke ferry $278.99 (Parking &amp; Tolls → Travel); AutoPod plugin $45.98 (Design &amp; Content → Subscriptions); Hospitality Superstore cold cups $199 (Traditional → Events). Accruals likely missing: no September BP fuel card statement (August was $1,980), no September account-tab journal for Brand Spend Beer or Brewpub Hospitality, and no Swigg Power BI / Microsoft 365 charge ($158.60/month) for Aug or Sep.</p>
+
+  <h2>Price increases over time</h2>
+  <p class="sub">Like-for-like line items, Jul 2025 – Sep 2026. Freight still fell 13% on last year because fewer drops went to ATT; the rate rise is hidden by volume mix, not a better price.</p>
+  <div class="card scroll"><table id="prices"></table></div>
+
+  <h2>Spend to cut or that looks overpriced</h2>
+  <p class="sub">Overlapping software is the easiest saving: about $4k–$9k a year depending on which tools go. The Swigg BrandPrint termination in August already removes about $19k a year.</p>
+  <div class="card scroll"><table id="cuts"></table></div>
+
+  <h2>Transactions by account</h2>
+  <p class="sub">All 352 Q1 FY27 transactions in the Sales accounts; each account total matches the Xero P&amp;L. Type: PI = bill, SM = spend money, MJ = manual journal, RM = receive money.</p>
+  <div class="legend">
+    <span class="badge b-fix">Fix – miscoded or wrong period</span>
+    <span class="badge b-check">Check – possible duplicate or error</span>
+    <span class="badge b-price">Price up</span>
+    <span class="badge b-cut">Cut? / High</span>
+    <span class="badge b-rcpt">No receipt</span>
+  </div>
+  <div id="accts"></div>
+
+  <p class="foot">Source: Xero (Your Mates Brewing Co.) Account Transactions and Profit &amp; Loss, and the FY25 Your Mates Xero File Budget (FY27 months), pulled 1 Nov 2026. Your Mates Bowls Pub (Your Mate Bowlsy) is a separate Xero file and is not included. Ticks and notes are saved in this browser automatically; use <b>Save copy with notes</b> to keep or send a version that carries them.</p>
+</div>
+
+<script id="saved-state" type="application/json">{}</script>
+<script>
+/* ---------- DATA ---------- */
+const SUMMARY=[
+["Wages – Sales Full Time",38269.25,58014.11,61602.91,39999],
+["Advertising – Events",24644.12,-36485.00,22170.67,8574],
+["Freight (COGS)",12826.09,13853.84,14731.80,33950],
+["Advertising – Trade Spend Merchandise",11055.73,78.00,-730.11,13500],
+["Wages – Bonus",7500,0,0,0],
+["Advertising – Digital Ads",6497.41,794.00,2471.76,20000],
+["Advertising – Print & POS",4999.32,3442.85,4154.14,10875],
+["Subscriptions – Sales",4760.70,5007.87,4498.23,4500],
+["Wages – Sales On Costs",4749.76,10442.13,9576.07,10836],
+["Advertising – Design & Content Creation",4745.98,300.38,112.32,0],
+["Advertising – Brand Spend Beer",3693.58,1804.44,94.02,6000],
+["Service & Maintenance",3620.24,2376.77,4260.25,2400],
+["Wages – Sales Annual Leave",2954.96,1153.85,0,0],
+["Fuel",2803.30,4049.20,4905.47,4500],
+["Subscriptions – Data",2758.60,4275.80,7178.00,5100],
+["Registration",1879.38,0,1325.24,1500],
+["Accommodation",972.53,0,2015.90,900],
+["Advertising – Brand Spend Merchandise",838.62,0,0,600],
+["Food & Drink",596.21,1983.83,1434.36,750],
+["Merchant Fee",499.21,365.08,322.79,540],
+["Parking & Tolls",431.11,216.56,163.16,150],
+["Telephone & Internet",411.16,402.70,385.43,390],
+["Advertising – Trade Spend Beer",359.81,509.62,-950.34,22749],
+["Advertising – Brewpub Hospitality",351.91,1094.59,622.93,1500],
+["Larry Keg COGS",345,0,0,0],
+["General Expenses",318.95,303.81,170.00,240],
+["Advertising – Traditional",225.27,348.06,1215.00,0],
+["Wages – Sales Road Crew",142.17,193.86,1576.69,1500],
+["Taxi / Uber / Hire Car",67.90,371.34,108.52,150],
+["Advertising – Paid Ambassadors",0,0,762.96,3000],
+["Flights & Long Haul Driving",0,0,626.51,600],
+["Repairs and Maintenance",0,35.45,0,450],
+["Safety",0,0,0,90],
+["Other (Bad Debt, HR, Lager Middy Keg COGS)",0,0,-6606.50,0]
+];
+
+const ISSUES=[
+["15 Jul","Adv – Events","Sunshine Coast Lightning INV-0409 – bar operations, pre-season to RD14 (Feb–Jun 2026)",28911.96,"FY26 games expensed in FY27 – a cut-off error. FY26 already holds $68.1k of Bowls Pub credits for the same games.","Accrue to FY26 (journal to 30 Jun) or note as prior-period. Q1 is overstated by $28.9k."],
+["3 & 17 Aug","Adv – Events","Sumup – Eatons Hill Hotel Event revenue; Brewoomba revenue",-5171.42,"Event takings booked as negative expense, hiding both revenue and the true event cost.","Recode to Sales – Events – Other Income (44505); same for Bowls Pub SCL credits going forward."],
+["28 Sep","Wages – Annual Leave / Full Time","Pay run 21–27 Sep: full week $2,980.77 plus $2,666.50 annual leave",2666.50,"Leave paid on top of a full week. In July leave correctly reduced ordinary pay ($2,692 + $288 = $2,981).","Check whether this was a leave cash-out or termination payout; if not, it's an overpayment."],
+["1 Aug & 1 Sep","Service & Maintenance","Cricks VW – Amarok 813YSU 180,000 km service + repairs, Part 1 and Part 2",1884.50,"Two identical $942.25 charges, 4 days after a $491.59 Peter Ritchie service on the same vehicle (28 Jul).","Confirm against the Cricks invoice that Part 2 isn't a duplicate, and why it was serviced twice."],
+["13 Jul & 3 Aug","Wages – Bonus","Sales Bonus, 2 × $3,750",7500,"On-costs those weeks stayed at 12% of base pay only. If the bonus is ordinary-time earnings, ~$900 super is missing. Not budgeted.","Confirm the super treatment with payroll."],
+["7–23 Aug","Adv – Events","Wine for Brewpub from Events stock (13 lines)",-1570.55,"Stock transfer credited to an advertising account.","Credit Events stock / Brew Pub wine COGS, not Events advertising."],
+["28 Jul & 11 Sep","Adv – Digital Ads","Meta – Sales – Functions $349.56, Sales – Bookings $86.25 and $243.91",679.72,"Brew Pub function and booking campaigns.","Recode to Brew Pub – Advertising – Digital Ads (60125)."],
+["30 Jul – 12 Aug","Adv – Digital Ads","Me&U Trading – Sproutsend SMS credits (4 bills)",407.50,"Me&U is the venue ordering platform – likely Brew Pub guest marketing.","Confirm, then recode to Brew Pub."],
+["10 Sep","Larry Keg COGS","Australian Liquor Merchants – Larry Keg",345,"ALM claim in an account used nowhere else; other ALM replacement claims go to Indy Discounts.","Recode to Sales – Indy Bottleshops & On Prem – Discounts (43551)."],
+["7 Jul","General Expenses","King IT Birtinya – phone screen fix + card fee",318.95,"A repair.","Recode to Sales – Repairs and Maintenance ($450 budget, nothing spent)."],
+["Jul–Sep","Fuel / Registration","Ford Transit 340AM8 and 358YMV – fuel $1,777, rego $487",2264,"Transits are usually delivery vans.","If they're Logistics vehicles, recode to Logistics."],
+["Jul vs Aug/Sep","Digital Ads vs Design & Content","Sunny Advertising Group monthly retainer",5000,"July ($1,000) coded to Digital Ads; Aug and Sep ($2,000 each) to Design & Content, which has no budget.","Pick one account for the retainer."]
+];
+
+const PRICES=[
+["All Purpose Transport – ATT Logistics drop (avg)","Freight","$317 (Q1 FY26, 16 drops)","$414 (7 drops)","+31%","Steady climb each quarter"],
+["All Purpose Transport – ALM Crestmead drop (avg)","Freight","$334 (Q1 FY26, 12 drops)","$386 (12 drops)","+16%","Q4 FY26 ($362)"],
+["All Purpose Transport – GHPL Eagle Farm drop (avg)","Freight","$285","$274","-4%","Flat, for comparison"],
+["Print Ezy – A4 counter card, 3 mm PVC with strut","Print & POS","$4.55 each (May 26, qty 40)","$12.73 (Aug, qty 20); $7.27 (Sep, qty 20)","+60% to +180%","Aug 2026"],
+["Print Ezy – tap talker on PVC","Print & POS","$4.32–$5.45 each (Apr–May 26)","$9.09 (Aug, qty 15); $6.24 (Sep, qty 97)","+15% to +110%","Aug 2026"],
+["Ontap Data – Standard CRM Export","Subscriptions – Sales","$50/month","$80/month","+60%","Dec 2025"],
+["Ontap Data – Rep and Segment Maintenance","Subscriptions – Sales","$50/month","$80/month","+60%","Dec 2025"],
+["Ontap Data – Live Warehouse data","Subscriptions – Sales","$350/month","$375/month","+7%","Dec 2025"],
+["Adobe Creative Cloud Pro","Subscriptions – Sales","$88.17/month","$103.17/month","+17%","Feb 2026"],
+["CapCut Pro","Subscriptions – Sales","$5.45/month (intro)","$27.26/month","+400%","May 2026"],
+["Sunny Advertising Group retainer","Digital Ads / Design & Content","$1,000/month (Jul)","$2,000/month (Aug, Sep)","+100%","Aug 2026"],
+["Forte – user licence and admin fee","Subscriptions – Sales","$327.81 + $10.92","$337.65 + $11.25","+3%","Apr 2026"],
+["Amaysim – Josh Pitts mobile","Telephone & Internet","$20.00/month","$22.73/month","+14%","Jun 2026"],
+["Sales Full Time salary (weekly)","Wages","$2,884.62","$2,980.77","+3.3%","20 Jul 2026 (annual increase)"]
+];
+
+const CUTS=[
+["Hootsuite (3 seats, annual) vs Sprout Social","Subscriptions – Sales","$4,788/yr (Jan 26) + Sprout $60.50 (Aug, no receipt)","Two social media schedulers; Sprout was also $573 in Q2 FY26.","Cut one: cancel Hootsuite before the Jan 2027 renewal, or Sprout now.","730–4,788"],
+["Beverex","Subscriptions – Sales","$189/month","No receipt ever (all on Christen's card); overlaps Ontap ($885/month) and Forte for sales data.","Confirm who uses it; cut if Ontap covers it.","2,268"],
+["Adobe 1 TB storage – two plans","Subscriptions – Sales","2 × $14.54/month (22 and 23 Sep)","Duplicate storage subscription.","Cut one.","174"],
+["CapCut Pro + AutoPod + Canva alongside Adobe CC Pro","Subscriptions / Design & Content","$27.26 + $45.98/month; Canva $981.82/yr","Adobe CC Pro ($103.17/month) already covers video and design.","Cut CapCut and AutoPod; review Canva at renewal (Feb 2027).","880–1,860"],
+["Forte card and failed-payment fees","Subscriptions – Sales","$7.35/month + $19.91 failed fees","Avoidable fees.","Switch to direct debit.","110"],
+["Amarok 813YSU (VW, 180,000 km)","Service, Rego, Fuel","$2,376 service in Q1 + $564 rego (6 months)","Two services in 4 days; high-km vehicle.","Get a sell-vs-keep figure before the next service.","Review"],
+["Caddy fleet","Service, Rego","065ZZG service $919, rego $339; 066ZZG rego $487","A Caddy was detailed 'ready to be sold' on 29 Jul ($247), but both Caddies had rego paid in Q1.","Confirm which was sold and claim the rego refund.","~340"],
+["Print Ezy small reorders","Print & POS","e.g. 20 A4 counter cards at $12.73 each (Aug)","Same items cost $4.55 in a run of 40.","Batch POS orders monthly; get a price list for standard items.","1,000–2,000"],
+["Booking.com – 2-bedroom ocean-view residence, Broadbeach (28 Aug)","Accommodation","$581.62","Premium booking; other sales stays run $150–$200 a night.","Set a nightly cap (e.g. $200) in the travel policy.","Policy"],
+["'Amaysim Sales Telephone'","Telephone & Internet","$27.27, charged 4 times in 3 months (8 and 15 Sep both)","Unknown user and a possible double charge.","Identify the number; cancel if unused.","327"],
+["Paying our own venues by card","Food & Drink, Trade Spend Beer","Your Mates Brewing Co $310.58 (incl. $278.75 Volcom premiere); Crackerjack Cooroy $18.45","Paying ourselves retail on a card inflates both sides and may raise FBT.","Run through the account tabs at cost instead.","Process"],
+["Receipts missing","Various","15 transactions, $1,246","Beverex, Stradbroke ferry $278.99, Matt's card bar spend, Josh's parking.","Chase receipts, or the GST credits are at risk.","~113 GST"],
+["Nexburg custom EvaKool coolers (14 Sep)","Trade Spend Merchandise","$10,993 (2 × $5,496.50)","Deposit and balance booked the same day, same amount, same invoice (IN1056163).","Confirm the invoice total is $10,993 and the deposit wasn't also paid earlier.","Check"]
+];
+
+/* Accounts: [name, total, note, rows[[date,type,desc,ref,amount,flag]]] */
+const ACCTS=[
+["Accommodation",972.53,"",[
+["16 Aug","PI","BOOKING.COM – Josh Pitts, Toowoomba 14–16/08","5830.005.148",390.91,""],
+["28 Aug","PI","BOOKING.COM – Casino residence 2-BR ocean view, Broadbeach","5661489981",581.62,"High"]]],
+["Advertising – Brand Spend Beer",3693.58,"No September account-tab journal yet – accrual missing.",[
+["31 Jul","MJ","Account Tabs July 26","#382073",3054.80,"Check – highest month in 15 months"],
+["31 Jul","PI","Your Mates Bowls Pub – Account Tabs July 26 – Marketing","INV-0242",39.58,""],
+["31 Aug","MJ","Account Tabs August 26","#385016",576.31,""],
+["31 Aug","PI","Your Mates Bowls Pub – Account Tabs August 26 – Marketing","INV-0243",22.89,""]]],
+["Advertising – Brand Spend Merchandise",838.62,"",[
+["21 Jul","PI","Nexburg – EvaKool Alpine Cooler 15L + reusable ice cubes (150)","IN1055235",838.62,"Check – same product as the Trade Spend Merch order"]]],
+["Advertising – Brewpub Hospitality",351.91,"No September account-tab journal yet.",[
+["31 Jul","MJ","Account Tabs July 26","#382073",217.05,""],
+["31 Aug","MJ","Account Tabs August 26","#385016",75.16,""],
+["31 Aug","PI","Your Mates Bowls Pub – Account Tabs August 26 – Sales","INV-0243",59.70,""]]],
+["Advertising – Design & Content Creation",4745.98,"",[
+["3 Jul","PI","Lemon Squeezy – AutoPod monthly subscription","7789467",45.98,"Fix – Subscriptions; Cut?"],
+["1 Aug","PI","Sunny Advertising Group – monthly retainer, August","INV-4927",2000,"Price up (was $1,000); Fix – July coded to Digital Ads"],
+["1 Sep","PI","Sunny Advertising Group – monthly retainer, September","INV-5026",2000,"Price up"],
+["3 Sep","PI","Contento Studios – video clips, photography + reels package","INV-YM09",700,""]]],
+["Advertising – Digital Ads",6497.41,"",[
+["1 Jul","PI","Sunny Advertising Group – monthly retainer, July","INV-4839",1000,"Fix – Aug/Sep coded to Design & Content"],
+["2 Jul","PI","Meta – Sales","JVHDRRVD92",1057.09,""],
+["2 Jul","PI","Meta – Awareness","JVHDRRVD92",241.97,""],
+["2 Jul","PI","Meta – Conversions","JVHDRRVD92",82.94,""],
+["5 Jul","PI","Meta – Awareness, 1–5 Jul","8L6X4URD92",194.81,""],
+["5 Jul","PI","Meta – Sales, 1–5 Jul","8L6X4URD92",1123.69,""],
+["5 Jul","PI","Meta – Conversions, 1–5 Jul","8L6X4URD92",63.50,""],
+["21 Jul","PI","Mix In By Endeavour – Jun Criteo SP, Dan Murphy's","1800012534",200,""],
+["28 Jul","PI","Meta – Awareness, 13–28 Jul","PE2Q6V9E92",936.69,""],
+["28 Jul","PI","Meta – Traffic – Tactical, 13–28 Jul","PE2Q6V9E92",9.50,""],
+["28 Jul","PI","Meta – Sales – Functions, 13–28 Jul","PE2Q6V9E92",349.56,"Fix – Brew Pub"],
+["28 Jul","PI","Meta – Sales – Bookings, 13–28 Jul","PE2Q6V9E92",86.25,"Fix – Brew Pub"],
+["30 Jul","PI","Me&U Trading – SMS credits Sproutsend","INV-100804",94.50,"Fix? – likely Brew Pub"],
+["5 Aug","PI","Me&U Trading – SMS credits Sproutsend","INV-101099",55,"Fix? – likely Brew Pub"],
+["12 Aug","PI","Me&U Trading – SMS credits Sproutsend","INV-101300",90,"Fix? – likely Brew Pub"],
+["12 Aug","PI","Me&U Trading – Sproutsend","INV-101299",168,"Fix? – likely Brew Pub"],
+["24 Aug","PI","Mix In By Endeavour – Jul Criteo SP, Dan Murphy's","1800012758",500,""],
+["11 Sep","PI","Meta – Sales – Bookings, 27 Aug – 11 Sep","FXGYUZDD92",243.91,"Fix – Brew Pub"]]],
+["Advertising – Events",24644.12,"Genuine Q1 event costs were $2,474. The rest is the FY26 Lightning invoice less event revenue and stock transfers booked as credits.",[
+["10 Jul","PI","Woodlands Events – site fee 6 m x 3 m, festival, Gold Coast","INV-0242",1625,""],
+["15 Jul","PI","Sunshine Coast Lightning – 2026 bar operations, pre-season to RD14 (22 Feb – 13 Jun)","INV-0409",28911.96,"Fix – FY26 cost (cut-off)"],
+["17 Jul","PI","Suncoast Bolts – M6 x 30 CSK screw","IN501681",1.22,""],
+["17 Jul","PI","Suncoast Bolts – M6 wing nut","IN501681",4.12,""],
+["17 Jul","PI","Suncoast Bolts – M6 spring washer","IN501681",0.18,""],
+["3 Aug","RM","Sumup – Eatons Hill Hotel Event revenue","Eatons Hill Hotel Event",-3713.39,"Fix – revenue, recode to 44505"],
+["6 Aug","PI","Sunshine Brewery – Passport to Malt & Mayhem Oktoberfest contribution","23043",245.45,""],
+["7 Aug","MJ","Wine for Brewpub from Events stock – 15 Sav Blanc","#382773",-176.66,"Fix – stock transfer"],
+["7 Aug","MJ","Wine for Brewpub from Events stock – 8 Pinot Noir","#382773",-117.50,"Fix – stock transfer"],
+["7 Aug","MJ","Wine for Brewpub from Events stock – 7 Prosecco","#382773",-74.83,"Fix – stock transfer"],
+["7 Aug","MJ","Wine for Brewpub from Events stock – 7 Pinot Grigio","#382773",-53.26,"Fix – stock transfer"],
+["7 Aug","MJ","Wine for Brewpub from Events stock – 4 Chardonnay","#382773",-73.80,"Fix – stock transfer"],
+["7 Aug","MJ","Wine for Brewpub from Events stock – 5 Shiraz","#382773",-59.30,"Fix – stock transfer"],
+["7 Aug","MJ","Wine for Brewpub from Events stock – 6 Sem Sav","#382773",-66.24,"Fix – stock transfer"],
+["17 Aug","RM","Brewoomba – revenue","Brewoomba",-1458.03,"Fix – revenue, recode to 44505"],
+["23 Aug","MJ","Wine for Brewpub from Events stock – 12 Brut","#383353",-206.03,"Fix – stock transfer"],
+["23 Aug","MJ","Wine for Brewpub from Events stock – 6 Prosecco","#383353",-64.14,"Fix – stock transfer"],
+["23 Aug","MJ","Wine for Brewpub from Events stock – 6 Pinot Noir","#383353",-88.13,"Fix – stock transfer"],
+["23 Aug","MJ","Wine for Brewpub from Events stock – 12 Shiraz","#383353",-142.32,"Fix – stock transfer"],
+["23 Aug","MJ","Wine for Brewpub from Events stock – 24 Rose","#383353",-357.04,"Fix – stock transfer"],
+["23 Aug","MJ","Wine for Brewpub from Events stock – 12 Pinot Grigio","#383353",-91.30,"Fix – stock transfer"],
+["30 Sep","PI","Easy Signs – DL flyers, double sided, 200 gsm gloss","969730AU",147.30,"Fix – similar items go to Print & POS"],
+["30 Sep","PI","Easy Signs – outdoor custom stickers 100 x 100 mm","969730AU",439.95,"Fix – similar items go to Print & POS"],
+["30 Sep","PI","Easy Signs – courier","969730AU",10.91,""]]],
+["Advertising – Print & POS",4999.32,"",[
+["9 Jul","PI","Print Ezy – A3 on 400 gsm artboard, 2-side matt cello, qty 100","INV-36409",321.82,""],
+["9 Jul","PI","Print Ezy – DL flyer 200 gsm gloss, qty 50","INV-36409",26.07,""],
+["15 Jul","PI","Silverback Signs – vinyl on 4.5 mm black acrylic, 90 x 138 mm","31598",35,""],
+["15 Jul","PI","Silverback Signs – vinyl on 5 mm PVC, 90 x 160 mm","31598",100,""],
+["23 Jul","PI","Print Ezy – tasting-note stickers 73 x 73 mm, qty 25","INV-36617",68.18,""],
+["23 Jul","PI","Print Ezy – A0 posters, 2 kinds x 2","INV-36617",127.27,""],
+["29 Jul","PI","Print Ezy – tap talkers 80 x 150 mm, custom cut, qty 120","INV-36704",654.55,""],
+["31 Jul","PI","Easy Signs – outdoor custom stickers 95 x 100 mm","938224AU",426.35,""],
+["31 Jul","PI","Easy Signs – AMEX surcharge","938224AU",10.23,""],
+["31 Jul","PI","Print Ezy – A2 corflute with eyelets, x 2","INV-36765",52.73,""],
+["5 Aug","PI","Officeworks – printing on-prem sales sheets","406 064",9.09,""],
+["6 Aug","PI","Print Ezy – 1100 x 1800 mm custom-cut corflute with strut","INV-36790",163.64,""],
+["6 Aug","PI","Print Ezy – 600 x 900 mm corflutes, x 2","INV-36790",63.64,""],
+["6 Aug","PI","Print Ezy – 600 x 900 mm corflutes, x 5","INV-36791",136.36,""],
+["18 Aug","PI","Print Ezy – A2 corflutes, 3 kinds x 1, eyelets","INV-36932",79.09,""],
+["24 Aug","PI","Officeworks – off-prem sales sheet printing","406 064",9.09,""],
+["26 Aug","PI","Print Ezy – Caloundra Big 4 A2 corflutes, x 2","INV-37057",54.55,""],
+["26 Aug","PI","Print Ezy – A2 posters, 2 kinds x 1","INV-37057",54.55,""],
+["26 Aug","PI","Print Ezy – fridge stickers 200 x 100 mm, qty 10","INV-37057",54.55,"Price up – $5.45 each vs $1.79 in Sep"],
+["26 Aug","PI","Print Ezy – A4 counter cards, 3 mm PVC, qty 20","INV-37057",254.55,"Price up – $12.73 each vs $4.55 in May"],
+["26 Aug","PI","Print Ezy – A3 counter cards, 3 mm PVC, qty 37","INV-37057",403.64,""],
+["26 Aug","PI","Print Ezy – tap talkers 80 x 150 mm, 3 mm PVC, qty 15","INV-37057",136.36,"Price up – $9.09 each vs $4.32–$5.45"],
+["26 Aug","PI","Print Ezy – What's On cards 200 x 250 mm, 3 mm PVC","INV-37057",36.82,""],
+["26 Aug","PI","Print Ezy – A-frame inserts 600 x 900 mm, 4 kinds","INV-37057",127.27,""],
+["26 Aug","PI","Print Ezy – tap hangers 300 x 100 mm, 5 mm PVC, x 20","INV-37057",151.82,""],
+["26 Aug","PI","Print Ezy – artwork adjustments","INV-37057",45.45,""],
+["28 Sep","PI","Print Ezy – A1 poster","INV-37507",136.36,""],
+["28 Sep","PI","Print Ezy – A4 counter cards, 3 mm PVC, qty 20","INV-37507",145.45,"Price up – $7.27 each vs $4.55 in May"],
+["28 Sep","PI","Print Ezy – A3 counter cards, 3 mm PVC, qty 20","INV-37507",218.18,""],
+["28 Sep","PI","Print Ezy – tap hangers 300 x 100 mm, 5 mm PVC","INV-37507",58.09,""],
+["28 Sep","PI","Print Ezy – stickers 200 x 100 mm, qty 30","INV-37507",53.64,""],
+["28 Sep","PI","Print Ezy – tap talkers 80 x 150 mm, 3 mm PVC, qty 97","INV-37507",604.93,"Price up – $6.24 each"],
+["29 Sep","PI","Silverback Signs – acrylic tap signs (Jeff 6, Dave 15, Sunny Coast middy 12)","32083",126,""],
+["29 Sep","PI","Silverback Signs – 105 x 85 mm signs","32083",54,""]]],
+["Advertising – Trade Spend Beer",359.81,"",[
+["14 Jul","PI","Sage & Olive Cafe – coffee with Ben Taylor (My Beer Dealer)","10zt",9.61,""],
+["20 Jul","PI","Drift Bar – shouted 2 visitors a Larry","RB21224720060",18.20,""],
+["20 Jul","PI","Drift Bar – same receipt (rounding)","RB21224720060",0.26,""],
+["6 Aug","SM","Alex Surf Club – Matt's card","",36.80,"No receipt"],
+["10 Aug","SM","Alex Surf Club – Matt's card","",58.88,"No receipt"],
+["14 Aug","PI","Fitzy's Toowoomba – beer with Ashley Fox (Balter), Brewoomba","GJK6AV00A2",22.95,""],
+["14 Aug","PI","Fitzy's Toowoomba – beer with Brad Fitzgibbons (manager), Brewoomba","GJK25D00B7",23.87,""],
+["17 Aug","SM","Crackerjack Cooroy – Matt's card","",18.45,"No receipt; own venue"],
+["17 Aug","SM","Kings Beach Surf Club – Matt's card","",40.11,"No receipt"],
+["17 Aug","SM","Kings Beach Surf Club – Matt's card","",43.34,"No receipt"],
+["23 Aug","PI","Alex Surf Club – Larry jug","342275",26.68,""],
+["24 Aug","PI","Headland Golf Club – Caloundra Falcons golf day, beer for Clayton Williams + 2 staff","65789",33.19,""],
+["29 Aug","PI","The Pursuit of Hoppiness – bar shout","00032026082949",6.40,""],
+["29 Aug","PI","The Pursuit of Hoppiness – same receipt (rounding)","00032026082949",0.07,""],
+["14 Sep","SM","Cross Promotions – Josh's card","",21,"No receipt"]]],
+["Advertising – Trade Spend Merchandise",11055.73,"",[
+["22 Jul","PI","Caloundra Home Brew – A-type coupler for Caloundra Golf Club (new tap)","41193",62.73,""],
+["14 Sep","PI","Nexburg – EvaKool Alpine Cooler 15L, custom colour – balance","IN1056163 Balance",5496.50,"Check – confirm invoice total"],
+["14 Sep","PI","Nexburg – EvaKool Alpine Cooler 15L, custom colour – 50% deposit","IN1056163 50% deposit",5496.50,"Check – deposit not paid twice?"]]],
+["Advertising – Traditional",225.27,"",[
+["3 Jul","PI","IGA – ice for tasting","00233338",4.09,""],
+["6 Aug","PI","Hospitality Superstore – cold cups, clear green stripe","IN475937",199,"Fix – Events consumable"],
+["24 Aug","PI","IGA – tape and Blu Tack for Caloundra Big 4 corflutes","RB21557663460",22.18,""]]],
+["Food & Drink",596.21,"",[
+["8 Jul","PI","Your Mates Brewing Co – dinner after Maroochy River golf + bar shout (approved by Hep)","RB21557611910",26.57,"Check – own venue"],
+["10 Jul","PI","Kai Coffee – coffee for Josh and me before meeting","131253",8.18,""],
+["13 Jul","PI","Lucky Duck – coffee with Sam (Wellers Hill Bowls Club)","RB21152267980",5.82,""],
+["30 Jul","PI","Kai Coffee – coffee for quarterly meeting","132250",8.18,""],
+["1 Aug","PI","Flamin Grillas – dinner for Hep, Josh and me at Eatons Hill","RB21627619030",25.91,""],
+["12 Aug","PI","New York Minute – lunch with Hep before meeting with Antony","RB21557642840",55.82,""],
+["13 Aug","PI","Kai Coffee – coffee for Hep and me before meeting","132958",8.18,""],
+["14 Aug","PI","Fitzy's Toowoomba – lunch for Josh and me, Brewoomba set-up","GJJTW2001E",51.42,""],
+["15 Aug","PI","Sweet Talk Coffee – breakfast for Kayla and me, Brewoomba","SP-63 0815000128",44.20,""],
+["15 Aug","PI","Sweet Talk Coffee – same receipt","SP-63 0815000128",5.89,""],
+["15 Aug","PI","Fitzy's Toowoomba – lunch for Josh and me, Brewoomba","RB21557652440",18.18,""],
+["15 Aug","PI","Fitzy's Toowoomba – dinner for Josh and me, Brewoomba","GJMSOCOODU",25.71,""],
+["24 Aug","PI","Your Mates Brewing Co – hosted 4 venue team members at the Volcom movie premiere","RB21557583400",278.75,"Check – own venue at retail; FBT?"],
+["25 Aug","PI","Bribie Island RSL – lunch with manager Nat","46466",28.14,""],
+["28 Aug","PI","Your Mates Brewing Co – beer with McGarry","RB21602357630",5.26,"Check – own venue"]]],
+["Freight (COGS)",12826.09,"All All Purpose Transport. The flag is on the per-drop rate trend (see Price increases), not individual drops.",[
+["11 Jul","PI","JN1738403 – Cape York Camping pick-up","185123",436.56,"Check – recharge customer?"],
+["11 Jul","PI","JN1738407 – Cape York Camping pick-up","185123",66.92,"Check – recharge customer?"],
+["11 Jul","PI","JN1739956 – ALM Crestmead","185123",374.17,""],
+["11 Jul","PI","JN1740549 – GHPL DC Eagle Farm","185123",86.73,""],
+["11 Jul","PI","JN1742738 – ATT Logistics","185123",533.99,"Price up"],
+["11 Jul","PI","JN1742747 – ALM Crestmead","185123",381.42,""],
+["11 Jul","PI","JN1742828 – GHPL DC Eagle Farm","185123",261.04,""],
+["11 Jul","PI","JN1743565 – ALM Crestmead","185123",228.85,""],
+["11 Jul","PI","JN1743580 – Jim Pearsons Transport","185123",261.04,""],
+["25 Jul","PI","ILG Swanbank warehouse","185580",287.87,""],
+["25 Jul","PI","GHPL DC Eagle Farm","185580",261.69,""],
+["25 Jul","PI","ALM Crestmead","185580",1254.84,"Check – 3–4x a normal drop"],
+["25 Jul","PI","ATT Logistics","185580",382.38,""],
+["25 Jul","PI","GHPL DC Eagle Farm","185580",307.83,""],
+["25 Jul","PI","ALM Crestmead","185580",382.38,""],
+["8 Aug","PI","29/07 ILG Swanbank warehouse","186036",107.86,""],
+["8 Aug","PI","04/08 GHPL DC Eagle Farm","186036",271.29,""],
+["8 Aug","PI","31/07 GHPL DC Eagle Farm","186036",317.19,""],
+["8 Aug","PI","31/07 ALM Crestmead","186036",347.74,""],
+["8 Aug","PI","04/08 ATT Logistics","186036",417.14,"Price up"],
+["8 Aug","PI","07/08 GHPL DC Eagle Farm","186036",319.12,""],
+["22 Aug","PI","GHPL DC Eagle Farm 71197398R","186479",273.96,""],
+["22 Aug","PI","ALM Crestmead 418241","186479",273.96,""],
+["22 Aug","PI","ATT Logistics 111382713","186479",467.76,"Price up"],
+["22 Aug","PI","GHPL Eagle Farm PO-71199166R","186479",273.14,""],
+["22 Aug","PI","ALM Crestmead 418549","186479",352.25,""],
+["5 Sep","PI","JN1766433 28/08 GHPL DC Eagle Farm","186912",274.74,""],
+["5 Sep","PI","JN1766559 26/08 ILG Swanbank warehouse","186912",302.22,""],
+["5 Sep","PI","JN1767069 28/08 Jim Pearsons Transport","186912",274.74,""],
+["5 Sep","PI","JN1767092 31/08 ATT Logistics","186912",340.10,""],
+["5 Sep","PI","JN1770159 03/09 ALM Crestmead","186912",322.09,""],
+["5 Sep","PI","JN1770223 03/09 ALM Crestmead return","186912",63.34,"Check – recover from ALM?"],
+["19 Sep","PI","JN1769695 04/09 GHPL DC Eagle Farm","187362",322.09,""],
+["19 Sep","PI","JN1771746 11/09 GHPL DC Eagle Farm","187362",321.60,""],
+["19 Sep","PI","JN1771781 10/09 ATT Logistics","187362",352.58,""],
+["19 Sep","PI","JN1772103 10/09 ALM Crestmead","187362",321.60,""],
+["19 Sep","PI","JN1773538 17/09 GHPL DC Eagle Farm","187362",275.46,""],
+["19 Sep","PI","JN1773974 18/09 ALM Crestmead","187362",323.97,""],
+["19 Sep","PI","JN1774016 18/09 ATT Logistics","187362",402.44,"Price up"]]],
+["Fuel",2803.30,"No September BP fuel card statement – accrual likely missing (August was $1,980).",[
+["30 Jul","PI","BP – ultimate diesel 59.59 L at $2.399/L, Amarok","RB21335990330",129.96,""],
+["31 Jul","–","BP Australia – 065ZZG VW Caddy","RB21362985030",361.65,""],
+["31 Jul","–","BP Australia – 340AM8 Ford Transit","RB21362985030",2.68,"Fix? – Logistics van"],
+["31 Jul","–","BP Australia – 358YMV Ford Transit","RB21362985030",325.93,"Fix? – Logistics van"],
+["31 Jul","–","BP Australia – 813YSU VW Amarok","RB21362985030",2.68,""],
+["31 Aug","SM","BP – 065ZZG VW Caddy","14560572",2.68,""],
+["31 Aug","SM","BP – 066ZZG VW Caddy","14560572",526.63,""],
+["31 Aug","SM","BP – 340AM8 Ford Transit","14560572",902.75,"Fix? – Logistics van"],
+["31 Aug","SM","BP – 358YMV Ford Transit","14560572",545.66,"Fix? – Logistics van"],
+["31 Aug","SM","BP – 813YSU VW Amarok","14560572",2.68,""]]],
+["General Expenses",318.95,"",[
+["7 Jul","PI","King IT Birtinya – phone screen fix","RB21557686220",315.45,"Fix – Repairs and Maintenance"],
+["7 Jul","SM","King IT Birtinya – card fee","",3.50,""]]],
+["Larry Keg COGS",345,"",[
+["10 Sep","PI","Australian Liquor Merchants – Larry Keg","METCAS4505304631",345,"Fix – Indy Discounts (43551)"]]],
+["Merchant Fee",499.21,"All Stripe fees on trade-portal card payments. Passing a card surcharge to trade customers would recover about $2k a year.",[
+["1 Jul","SM","Stripe fee","INV-32949",5.37,""],["2 Jul","SM","Stripe fee","INV-33331",5.54,""],["2 Jul","SM","Stripe fee","INV-32982",5.67,""],
+["6 Jul","SM","Stripe fee","INV-19522",8,""],["13 Jul","SM","Stripe fee","INV-33648",5.88,""],["15 Jul","SM","Stripe fee","INV-33431",10.13,""],
+["15 Jul","SM","Stripe fee","INV-33812",5.37,""],["19 Jul","SM","Stripe fee","INV-19595",21.91,""],["24 Jul","SM","Stripe fee","INV-19609",14.34,""],
+["24 Jul","SM","Stripe fee","INV-33871-A",1.80,""],["25 Jul","SM","Stripe fee","INV-19607",22.84,""],["27 Jul","SM","Stripe fee","INV-19605",8,""],
+["27 Jul","SM","Stripe fee","INV-33839",5.88,""],["27 Jul","SM","Stripe fee","INV-33796",5.88,""],["28 Jul","SM","Stripe fee","INV-33913",8.43,""],
+["30 Jul","SM","Stripe fee","INV-33828",7,""],["31 Jul","SM","Stripe fee","INV-33816",5.37,""],["5 Aug","SM","Stripe fee","INV-33954",8.30,""],
+["5 Aug","SM","Stripe fee","INV-19750",8.93,""],["5 Aug","SM","Stripe fee","INV-33955",7.67,""],["6 Aug","SM","Stripe fee","INV-19749",8,""],
+["8 Aug","SM","Stripe fee","INV-19524",8,""],["10 Aug","SM","Stripe fee","INV-19861",14.95,""],["11 Aug","SM","Stripe fee","INV-34001",16.52,""],
+["12 Aug","SM","Stripe payment gateway fee","pi_3U3TJj",2.39,""],["12 Aug","SM","Stripe payment gateway fee","pi_3U3T7J",10.13,""],["15 Aug","SM","Stripe fee","INV-19702",8,""],
+["17 Aug","SM","Stripe payment gateway fee","pi_3U5CP3",4.83,""],["17 Aug","SM","Stripe payment gateway fee","pi_3U5HUw",8,""],["18 Aug","SM","Stripe fee","INV-34071",5.83,""],
+["19 Aug","SM","Stripe payment gateway fee","pi_3U5uf6",5.14,""],["19 Aug","SM","Stripe payment gateway fee","pi_3U62sP",8,""],["24 Aug","SM","Stripe fee","INV-34173",5.83,""],
+["26 Aug","SM","Stripe fee","INV-34231",4.76,""],["27 Aug","SM","Stripe payment gateway fee","pi_3U8oJn",10,""],["28 Aug","SM","Stripe payment gateway fee","pi_3U9Dcc",41.07,""],
+["28 Aug","SM","Stripe payment gateway fee","pi_3U9E0T",5.50,""],["31 Aug","SM","Stripe fee","INV-34213",5.83,""],["2 Sep","SM","Stripe payment gateway fee","pi_3UB3os",5.30,""],
+["8 Sep","SM","Stripe fee","INV-34185",2.47,""],["9 Sep","SM","Stripe fee","INV-19943",20.36,""],["15 Sep","SM","Stripe fee","pi_3UFloB",10,""],
+["15 Sep","SM","Stripe fee","pi_3UFloZ",5.30,""],["17 Sep","SM","Stripe fee","pi_3UGTlc",1.97,""],["18 Sep","SM","Stripe fee","pi_3UGu7o",61.32,""],
+["21 Sep","SM","Stripe fee","pi_3UHw6t",5.16,""],["23 Sep","SM","Stripe fee","pi_3UIlP0",10,""],["24 Sep","SM","Stripe fee","INV-20048",13.25,""],
+["24 Sep","SM","Stripe fee","INV-20059",8,""],["25 Sep","SM","Stripe fee","INV-34491",5.16,""],["28 Sep","SM","Stripe fee","INV-34445",5.83,""]]],
+["Parking & Tolls",431.11,"",[
+["25 Jul","PI","Car park – on-street parking","B2607101143741",54.96,""],
+["17 Aug","SM","Car park – Kayla, Toowoomba","",1.11,""],
+["17 Aug","SM","Oaks Hotels & Resorts – parking","",30.45,"No receipt"],
+["25 Aug","SM","Stradbroke Ferries – Josh","",278.99,"No receipt; Fix – Travel"],
+["26 Aug","SM","BCC Cellopark – Josh's card","",35.59,"No receipt"],
+["28 Sep","SM","BCC Cellopark – Josh's card","",30.01,"No receipt"]]],
+["Registration",1879.38,"",[
+["24 Aug","PI","Dept of Transport – rego 066ZZG (VW Caddy)","066ZZG",339.30,"Check – was this Caddy sold?"],
+["24 Aug","PI","Dept of Transport – CTP premium 066ZZG","066ZZG",147.45,""],
+["10 Sep","PI","Dept of Transport – 6-month rego 813YSU VW Amarok, CTP","RB21737318280",144,""],
+["10 Sep","PI","Dept of Transport – 6-month rego 813YSU VW Amarok","RB21737318280",419.75,""],
+["10 Sep","PI","Dept of Transport – card fee","RB21737318280",2.83,""],
+["22 Sep","PI","Dept of Transport – rego 358YMV (Ford Transit)","358YMV",339.30,"Fix? – Logistics van"],
+["22 Sep","PI","Dept of Transport – CTP premium 358YMV","358YMV",147.45,"Fix? – Logistics van"],
+["27 Sep","PI","Dept of Transport – rego 065ZZG (VW Caddy)","065ZZG",339.30,"Check – was this Caddy sold?"]]],
+["Service & Maintenance",3620.24,"",[
+["14 Jul","PI","Centenary Carwash – Caddy 066ZZG","RB21165773910",25,""],
+["28 Jul","PI","Peter Ritchie Premier Motors – service 813YSU (Amarok)","61144",491.59,"Check – serviced again 4 days later"],
+["29 Jul","PI","Snap Car Wash – detail clean of Caddy ready for sale (truck/car swap)","13XHA",247.06,""],
+["1 Aug","PI","Cricks Volkswagen – 813YSU Amarok 180,000 km service + repairs, Part 1","VBCSV225168 Part 1",942.25,"Check"],
+["27 Aug","PI","Peter Ritchie Premier Motors – service VW Caddy 065ZZG","61362",919.30,"Check – serviced the Caddy being sold?"],
+["27 Aug","PI","Peter Ritchie Premier Motors – same invoice (rounding)","61362",0.07,""],
+["31 Aug","PI","Super Cheap Auto – hydraulic jack oil","RB21628771310",27.72,""],
+["1 Sep","PI","Cricks Volkswagen – 813YSU Amarok 180,000 km service + repairs, Part 2","VBCSV225168 Part 2",942.25,"Check – same amount as Part 1"],
+["28 Sep","SM","Centenary Carwash","",25,"No receipt"]]],
+["Subscriptions – Data",2758.60,"No Power BI / Microsoft 365 bill for Aug or Sep – check whether still in use (accrue $317 if so).",[
+["29 Jul","PI","Swigg Consulting – BrandPrint subscription, July 2026","INV-3162",1600,""],
+["29 Jul","PI","Swigg Consulting – hardship discount","INV-3162",-500,""],
+["29 Jul","PI","Swigg Consulting – Power BI, 7 licences at $21","INV-3161",147,""],
+["29 Jul","PI","Swigg Consulting – Microsoft 365 Business Standard","INV-3161",11.60,""],
+["26 Aug","PI","Swigg Consulting – BrandPrint, August – termination fee","INV-3173",1500,""]]],
+["Subscriptions – Sales",4760.70,"Ontap didn't charge Claims Management ($100) in September – confirm whether dropped or to be back-billed.",[
+["2 Jul","PI","Adobe – Creative Cloud Pro, Jul","3506804489",103.17,"Price up (was $88.17)"],
+["6 Jul","PI","Forte – user licence fee","6730",337.65,"Price up 3%"],
+["6 Jul","PI","Forte – admin users","6730",11.25,""],
+["6 Jul","PI","Forte – monthly email integration","6730",20,""],
+["15 Jul","SM","Forte – card fee","",7.35,"Cut? – use direct debit"],
+["15 Jul","PI","Ontap – Direct Data","5782",150,""],
+["15 Jul","PI","Ontap – Claims Management","5782",100,""],
+["15 Jul","PI","Ontap – Standard CRM Export","5782",80,"Price up (was $50)"],
+["15 Jul","PI","Ontap – Rep and Segment Maintenance","5782",80,"Price up (was $50)"],
+["15 Jul","PI","Ontap – Data Management and Hosting","5782",100,""],
+["15 Jul","PI","Ontap – Live Warehouse data","5782",375,"Price up (was $350)"],
+["21 Jul","SM","Beverex – Christen's card","",189,"No receipt; Cut?"],
+["23 Jul","PI","Adobe – Creative Cloud Files Storage 1 TB (marketing)","",14.54,""],
+["27 Jul","–","ByteDance – CapCut Pro monthly","CC2026R602583701",27.26,"Price up (was $5.45); Cut?"],
+["2 Aug","PI","Adobe – Creative Cloud Pro, Aug","3537608813",103.17,""],
+["6 Aug","SM","Sprout Social – Matt's card","",60.50,"No receipt; Cut? – overlaps Hootsuite"],
+["6 Aug","PI","Forte – user licence fee","6792",337.65,""],
+["6 Aug","PI","Forte – admin users","6792",11.25,""],
+["6 Aug","PI","Forte – monthly email integration","6792",20,""],
+["17 Aug","PI","Ontap – Direct Data","5928",150,""],
+["17 Aug","PI","Ontap – Claims Management","5928",100,""],
+["17 Aug","PI","Ontap – Standard CRM Export","5928",80,""],
+["17 Aug","PI","Ontap – Rep and Segment Maintenance","5928",80,""],
+["17 Aug","PI","Ontap – Data Management and Hosting","5928",100,""],
+["17 Aug","PI","Ontap – Live Warehouse data","5928",375,""],
+["17 Aug","SM","Forte – card fee","",7.35,"Cut?"],
+["20 Aug","SM","Beverex – Christen's card","",189,"No receipt; Cut?"],
+["23 Aug","PI","Adobe – Creative Cloud Files Storage 1 TB (marketing)","",14.54,""],
+["27 Aug","PI","ByteDance – CapCut Pro monthly","CC2026R603726148",27.26,"Cut?"],
+["2 Sep","PI","Adobe – Creative Cloud Pro, Sep","3568643097",103.17,""],
+["4 Sep","PI","Forte – user licence fee","6859",337.65,""],
+["4 Sep","PI","Forte – admin users","6859",11.25,""],
+["4 Sep","PI","Forte – monthly email integration","6859",20,""],
+["14 Sep","SM","Forte – card fee","",7.35,"Cut?"],
+["15 Sep","PI","Ontap – Direct Data","6049",150,""],
+["15 Sep","PI","Ontap – Standard CRM Export","6049",80,""],
+["15 Sep","PI","Ontap – Rep and Segment Maintenance","6049",80,""],
+["15 Sep","PI","Ontap – Data Management and Hosting","6049",100,""],
+["15 Sep","PI","Ontap – Live Warehouse data","6049",375,""],
+["18 Sep","SM","Beverex – monthly subscription","",189,"No receipt; Cut?"],
+["22 Sep","PI","Adobe – Creative Cloud Files Storage 1 TB, 22 Sep – 21 Oct","3588786221",14.54,"Check – duplicate storage plan"],
+["23 Sep","PI","Adobe – Creative Cloud Files Storage 1 TB (marketing)","",14.54,"Check – duplicate storage plan"],
+["27 Sep","PI","ByteDance – CapCut Pro monthly","CC2026R604861744",27.26,"Cut?"]]],
+["Taxi / Uber / Hire Car",67.90,"",[
+["21 Aug","PI","Uber – home via Hep's house after an event","GICABGHC-03-2026-0000944",36.19,""],
+["22 Aug","PI","Uber – after work event","FCBHHEFF-03-2026-0001903",31.71,""]]],
+["Telephone & Internet",411.16,"",[
+["1 Jul","PI","Aldi Mobile – direct deliveries phone","201652170",20.91,""],
+["9 Jul","SM","Amaysim – Josh Pitts","",22.73,"Price up (was $20)"],
+["13 Jul","PI","Amaysim – Kayla","132654090",27.27,""],
+["14 Jul","SM","Amaysim – 'Sales Telephone'","",27.27,"Check – whose number?"],
+["27 Jul","PI","Amaysim – marketing phone","133329108",27.27,"Fix? – Marketing, not Sales"],
+["6 Aug","SM","Amaysim – Josh Pitts","",22.73,""],
+["6 Aug","PI","Aldi Mobile – direct deliveries phone","203253968",26.36,""],
+["10 Aug","PI","Amaysim – Kayla","133968712",27.27,""],
+["11 Aug","SM","Amaysim – 'Sales Telephone'","",27.27,"Check"],
+["24 Aug","PI","Amaysim – marketing phone","134658094",27.27,"Fix?"],
+["3 Sep","SM","Amaysim – Josh Pitts","",22.73,""],
+["7 Sep","PI","Amaysim – Kayla","135295768",27.27,""],
+["8 Sep","SM","Amaysim – 'Sales Telephone'","",27.27,"Check"],
+["15 Sep","SM","Amaysim – 'Sales Telephone'","",27.27,"Check – second charge in Sep"],
+["21 Sep","PI","Amaysim – marketing phone","135972130",27.27,"Fix?"],
+["25 Sep","PI","Aldi Mobile – deliveries phone","RB21897150170",23,""]]],
+["Wages – Sales Full Time",38269.25,"One full-time salary, $2,980.77 a week since 20 Jul (up 3.3%). Q1 FY26 carried about two salaries ($61.6k).",[
+["6 Jul","MJ","Pay run 29 Jun – 5 Jul","#382634",2884.62,""],
+["13 Jul","MJ","Pay run 6–12 Jul","#382636",2884.62,""],
+["20 Jul","MJ","Pay run 13–19 Jul","#382638",2980.77,""],
+["27 Jul","MJ","Pay run 20–26 Jul (reduced for leave)","#382640",2692.31,""],
+["3 Aug","MJ","Pay run 27 Jul – 2 Aug","#382642",2980.77,""],
+["10 Aug","MJ","Pay run 3–9 Aug","#382630",2980.77,""],
+["17 Aug","MJ","Pay run 10–16 Aug","#383075",2980.77,""],
+["24 Aug","MJ","Pay run 17–23 Aug","#385087",2980.77,""],
+["31 Aug","MJ","Pay run 24–30 Aug","#385085",2980.77,""],
+["7 Sep","MJ","Pay run 31 Aug – 6 Sep","#384975",2980.77,""],
+["14 Sep","MJ","Pay run 7–13 Sep","#385133",2980.77,""],
+["21 Sep","MJ","Pay run 14–20 Sep","#394359",2980.77,""],
+["28 Sep","MJ","Pay run 21–27 Sep","#396029",2980.77,"Check – full week paid alongside $2,666.50 leave"]]],
+["Wages – Sales On Costs",4749.76,"",[
+["6 Jul","MJ","Pay run 29 Jun – 5 Jul","#382634",346.16,""],
+["13 Jul","MJ","Pay run 6–12 Jul","#382636",346.16,"Check – no super on $3,750 bonus?"],
+["20 Jul","MJ","Pay run 13–19 Jul","#382638",357.70,""],
+["27 Jul","MJ","Pay run 20–26 Jul","#382640",357.70,""],
+["31 Jul","MJ","Annual leave by department, July","#382626",937.96,""],
+["3 Aug","MJ","Pay run 27 Jul – 2 Aug","#382642",357.70,"Check – no super on $3,750 bonus?"],
+["10 Aug","MJ","Pay run 3–9 Aug","#382630",357.70,""],
+["17 Aug","MJ","Pay run 10–16 Aug","#383075",357.70,""],
+["24 Aug","MJ","Pay run 17–23 Aug","#385087",357.70,""],
+["31 Aug","MJ","Pay run 24–30 Aug","#385085",357.70,""],
+["31 Aug","MJ","Annual leave by department, August","#385295",917.27,""],
+["7 Sep","MJ","Pay run 31 Aug – 6 Sep","#384975",357.70,""],
+["14 Sep","MJ","Pay run 7–13 Sep","#385133",374.76,""],
+["21 Sep","MJ","Pay run 14–20 Sep","#394359",357.70,""],
+["28 Sep","MJ","Pay run 21–27 Sep","#396029",357.70,""],
+["30 Sep","MJ","Annual leave by department, September","#396700",-1749.55,"Check – leave provision released; ties to 28 Sep leave"]]],
+["Wages – Bonus",7500,"",[
+["13 Jul","MJ","Pay run 6–12 Jul – Sales bonus","#382636",3750,"Check – not budgeted; super?"],
+["3 Aug","MJ","Pay run 27 Jul – 2 Aug – Sales bonus","#382642",3750,"Check – not budgeted; super?"]]],
+["Wages – Sales Annual Leave",2954.96,"",[
+["27 Jul","MJ","Pay run 20–26 Jul – annual leave","#382640",288.46,""],
+["28 Sep","MJ","Pay run 21–27 Sep – annual leave","#396029",2666.50,"Check – on top of a full week's pay"]]],
+["Wages – Sales Road Crew",142.17,"",[
+["14 Sep","MJ","Pay run 7–13 Sep – road crew","#385133",142.17,""]]]
+];
+
+/* ---------- STATE ---------- */
+let state={},EMB={};
+try{EMB=JSON.parse(document.getElementById('saved-state').textContent||'{}')||{};}catch(e){EMB={};}
+const KEY="ymb-sales-q1fy27-v1-"+(EMB._savedAt||"orig");
+state=Object.assign({},EMB.items||{});
+try{const ls=JSON.parse(localStorage.getItem(KEY)||'null');if(ls){state=Object.assign({},state,ls);}}catch(e){}
+function persist(){
+  try{localStorage.setItem(KEY,JSON.stringify(state));document.getElementById('saved').textContent='Saved in this browser '+new Date().toLocaleTimeString('en-AU',{hour:'2-digit',minute:'2-digit'});}
+  catch(e){document.getElementById('saved').textContent='Not saved – use "Save copy with notes"';}
+  refreshCounts();
+}
+const st=id=>state[id]||(state[id]={a:false,n:""});
+
+/* ---------- HELPERS ---------- */
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const money=(v,dp=2)=>{const a=Math.abs(v).toLocaleString('en-AU',{minimumFractionDigits:dp,maximumFractionDigits:dp});return v<0?'('+a+')':a;};
+const pct=(a,b)=>{if(b===0)return a===0?'–':'new';if((a<0)!==(b<0))return 'n/m';const p=(a-b)/Math.abs(b)*100;return Math.abs(p)>999?'n/m':(p>=0?'+':'')+p.toFixed(0)+'%';};
+function badgeClass(f){const s=f.toLowerCase();if(s.startsWith('fix'))return 'b-fix';if(s.startsWith('check'))return 'b-check';if(s.startsWith('price'))return 'b-price';if(s.startsWith('cut')||s.startsWith('high'))return 'b-cut';if(s.startsWith('no receipt'))return 'b-rcpt';return 'b-info';}
+function badges(f){if(!f)return '';return f.split(/;\s*/).map(p=>`<span class="badge ${badgeClass(p)}">${esc(p)}</span>`).join(' ');}
+function actCells(id){const s=state[id]||{a:false,n:''};
+  return `<td class="act"><label><input type="checkbox" data-id="${id}" ${s.a?'checked':''}> Please action</label></td>`+
+         `<td class="note"><textarea class="nt${s.n?' has':''}" data-id="${id}" rows="1" placeholder="Add a note…">${esc(s.n)}</textarea></td>`;}
+const ROWMETA={};
+
+/* ---------- RENDER ---------- */
+function renderKPIs(){
+  const k=[["Q1 FY27 spend","$143.3k","Sales accounts, ex-GST",""],["Budget","$195.3k","<span class='good'>$52.0k (27%) under</span>",""],
+    ["Same quarter last year","$138.2k","Q1 spend +4%",""],["Underlying spend","$114.4k","<span class='good'>-17% vs PY</span> excl. FY26 Lightning invoice",""],
+    ["Please action","<span id='kact'>0</span>","items ticked in this report",""]];
+  document.getElementById('kpis').innerHTML=k.map(x=>`<div class="kpi"><div class="l">${x[0]}</div><div class="v">${x[1]}</div><div class="d">${x[2]}</div></div>`).join('');
+}
+function renderSummary(){
+  let h=`<tr><th>Account (Sales –)</th><th class="n">Q1 FY27 ($)</th><th class="n">Q4 FY26 ($)</th><th class="n">vs Q4</th><th class="n">Q1 FY26 ($)</th><th class="n">vs Q1 FY26</th><th class="n">Budget ($)</th><th class="n">Over / (under) ($)</th><th>Action</th><th>Notes</th></tr>`;
+  const T=[0,0,0,0];
+  SUMMARY.forEach((r,i)=>{const id='s'+i;const [a,c,p,y,b]=r;T[0]+=c;T[1]+=p;T[2]+=y;T[3]+=b;const v=c-b;
+    ROWMETA[id]={sec:'Summary',acct:a,desc:a,amt:c,flag:''};
+    h+=`<tr data-row="${id}" data-text="${esc(a.toLowerCase())}"><td>${esc(a)}</td><td class="n">${money(c,0)}</td><td class="n">${money(p,0)}</td><td class="n">${pct(c,p)}</td><td class="n">${money(y,0)}</td><td class="n">${pct(c,y)}</td><td class="n">${money(b,0)}</td><td class="n ${v>0?'bad':v<0?'good':''}">${money(v,0)}</td>${actCells(id)}</tr>`;});
+  h+=`<tr class="total"><td>Total</td><td class="n">${money(T[0],0)}</td><td class="n">${money(T[1],0)}</td><td class="n">${pct(T[0],T[1])}</td><td class="n">${money(T[2],0)}</td><td class="n">${pct(T[0],T[2])}</td><td class="n">${money(T[3],0)}</td><td class="n good">${money(T[0]-T[3],0)}</td><td></td><td></td></tr>`;
+  document.getElementById('summary').innerHTML=h;
+}
+function renderSimple(el,head,rows,prefix,sec,amtIdx,map){
+  let h='<tr>'+head.map((x,i)=>`<th${i===amtIdx?' class="n"':''}>${x}</th>`).join('')+'<th>Action</th><th>Notes</th></tr>';
+  rows.forEach((r,i)=>{const id=prefix+i;ROWMETA[id]=map(r);
+    h+=`<tr data-row="${id}" data-flag="1" data-text="${esc(r.join(' ').toLowerCase())}">`+r.map((c,j)=>`<td${j===amtIdx?' class="n"':''}>${j===amtIdx&&typeof c==='number'?money(c):esc(c)}</td>`).join('')+actCells(id)+'</tr>';});
+  document.getElementById(el).innerHTML=h;
+}
+function renderAccts(){
+  let h='';
+  ACCTS.forEach((acc,ai)=>{const [name,total,note,rows]=acc;const flagged=rows.filter(r=>r[5]).length;
+    let t=`<tr><th>Date</th><th>Type</th><th>Description</th><th>Ref</th><th class="n">Amount ($)</th><th>Flag</th><th>Action</th><th>Notes</th></tr>`;
+    rows.forEach((r,ri)=>{const id='t'+ai+'_'+ri;ROWMETA[id]={sec:'Transactions',acct:name,date:r[0],desc:r[2],ref:r[3],amt:r[4],flag:r[5]};
+      t+=`<tr data-row="${id}" ${r[5]?'data-flag="1"':''} data-text="${esc((name+' '+r.join(' ')).toLowerCase())}"><td style="white-space:nowrap">${esc(r[0])}</td><td>${esc(r[1])}</td><td>${esc(r[2])}</td><td>${esc(r[3])}</td><td class="n">${money(r[4])}</td><td>${badges(r[5])}</td>${actCells(id)}</tr>`;});
+    h+=`<details class="acct" data-acct="${ai}"><summary><h3>${esc(name)}</h3><span class="pill">${rows.length} transaction${rows.length>1?'s':''}</span>${flagged?`<span class="pill f">${flagged} flagged</span>`:''}<span class="pill a hide" data-acnt="${ai}"></span><span class="amt">$${money(total)}</span></summary>${note?`<div class="anote">${esc(note)}</div>`:''}<div class="scroll"><table>${t}</table></div></details>`;});
+  document.getElementById('accts').innerHTML=h;
+}
+
+/* ---------- FILTERS & COUNTS ---------- */
+let view='all';
+function applyFilter(){
+  const q=document.getElementById('q').value.trim().toLowerCase();
+  document.querySelectorAll('tr[data-row]').forEach(tr=>{const id=tr.dataset.row;const s=state[id]||{};
+    let ok=true;
+    if(view==='flagged')ok=!!tr.dataset.flag;
+    if(view==='action')ok=!!s.a;
+    if(view==='notes')ok=!!(s.n&&s.n.trim());
+    if(ok&&q)ok=tr.dataset.text.includes(q)||(s.n||'').toLowerCase().includes(q);
+    tr.classList.toggle('hide',!ok);});
+  document.querySelectorAll('details.acct').forEach(d=>{const any=d.querySelector('tr[data-row]:not(.hide)');d.classList.toggle('hide',!any);if((view!=='all'||q)&&any)d.open=true;});
+}
+function refreshCounts(){
+  let n=0;const per={};
+  Object.entries(state).forEach(([id,s])=>{if(s&&s.a){n++;const m=id.match(/^t(\d+)_/);if(m)per[m[1]]=(per[m[1]]||0)+1;}});
+  document.getElementById('cnt').textContent=n?n+' to action':'';
+  document.getElementById('cnt2').textContent=n?'('+n+')':'';
+  const k=document.getElementById('kact');if(k)k.textContent=n;
+  document.querySelectorAll('[data-acnt]').forEach(p=>{const c=per[p.dataset.acnt]||0;p.textContent=c+' to action';p.classList.toggle('hide',!c);});
+  document.querySelectorAll('tr[data-row]').forEach(tr=>tr.classList.toggle('actioned',!!(state[tr.dataset.row]||{}).a));
+}
+
+/* ---------- EVENTS ---------- */
+document.addEventListener('change',e=>{if(e.target.matches('input[type=checkbox][data-id]')){st(e.target.dataset.id).a=e.target.checked;persist();if(view!=='all')applyFilter();}});
+document.addEventListener('input',e=>{if(e.target.matches('textarea.nt')){const t=e.target;st(t.dataset.id).n=t.value;t.classList.toggle('has',!!t.value);t.style.height='auto';t.style.height=t.scrollHeight+'px';clearTimeout(t._tm);t._tm=setTimeout(persist,300);}});
+document.getElementById('view').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;view=b.dataset.v;document.querySelectorAll('#view button').forEach(x=>x.classList.toggle('on',x===b));applyFilter();});
+document.getElementById('q').addEventListener('input',applyFilter);
+document.getElementById('expand').addEventListener('click',e=>{const ds=[...document.querySelectorAll('details.acct')];const open=!ds.every(d=>d.open);ds.forEach(d=>d.open=open);e.target.textContent=open?'Collapse all':'Expand all';});
+document.getElementById('csv').addEventListener('click',()=>{
+  const rows=[["Section","Account","Date","Description","Ref","Amount","Flag","Please action","Note"]];
+  Object.entries(state).forEach(([id,s])=>{if(!s||(!s.a&&!(s.n||'').trim()))return;const m=ROWMETA[id];if(!m)return;
+    rows.push([m.sec,m.acct||'',m.date||'',m.desc||'',m.ref||'',m.amt??'',m.flag||'',s.a?'Yes':'',s.n||'']);});
+  const csv=rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\r\n');
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['﻿'+csv],{type:'text/csv'}));a.download='Sales Q1 FY27 - action list.csv';a.click();
+});
+document.getElementById('savecopy').addEventListener('click',()=>{
+  const clean={};Object.entries(state).forEach(([k,v])=>{if(v&&(v.a||(v.n||'').trim()))clean[k]=v;});
+  const doc=document.documentElement.cloneNode(true);
+  doc.querySelector('#saved-state').textContent=JSON.stringify({_savedAt:Date.now(),items:clean}).replace(/</g,'\\u003c');
+  ['#summary','#issues','#prices','#cuts','#accts','#kpis'].forEach(s=>{const el=doc.querySelector(s);if(el)el.innerHTML='';});
+  const html='<!doctype html>\n'+doc.outerHTML;
+  const d=new Date();const stamp=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([html],{type:'text/html'}));a.download='Sales-Expense-Report-Q1-FY27 (notes '+stamp+').html';a.click();
+});
+
+/* ---------- INIT ---------- */
+renderKPIs();renderSummary();
+renderSimple('issues',['Date','Account','Transaction','Amount ($)','Issue','Suggested fix'],ISSUES,'i','Incorrect / miscoded',3,r=>({sec:'Incorrect / miscoded',acct:r[1],date:r[0],desc:r[2],amt:r[3],flag:r[4]+' → '+r[5]}));
+renderSimple('prices',['Supplier / item','Account','Before','Now (Q1 FY27)','Change','Since'],PRICES,'p','Price increases',-1,r=>({sec:'Price increases',acct:r[1],desc:r[0],flag:r[2]+' → '+r[3]+' ('+r[4]+')'}));
+renderSimple('cuts',['Item','Account','Current cost','Why','Suggestion','Est. annual saving ($)'],CUTS,'c','Cut / overpriced',-1,r=>({sec:'Cut / overpriced',acct:r[1],desc:r[0],flag:r[4]+' (saving '+r[5]+')'}));
+renderAccts();refreshCounts();
+document.querySelectorAll('textarea.nt.has').forEach(t=>{t.style.height='auto';t.style.height=t.scrollHeight+'px';});
+</script>
+</body>
+</html>

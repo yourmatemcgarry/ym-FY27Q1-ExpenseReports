@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Q1 Expense Reports</title>
+<style>
+:root{
+  --bg:#f6f5f2;--panel:#ffffff;--ink:#1d1d1b;--muted:#6b6a65;--line:#e4e2dc;--soft:#f0efea;
+  --accent:#1f5f8b;--accent-soft:#e7f1fb;--ok:#1d7a3e;--bad:#b42318;--bad-bg:#fdecea;--warn:#b54708;--warn-bg:#fdf0e3;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#151513;--panel:#1e1e1b;--ink:#ecebe6;--muted:#a3a19a;--line:#33322e;--soft:#26251f;
+  --accent:#7fb6e0;--accent-soft:#1c2b38;--ok:#7fd49a;--bad:#ff8a7a;--bad-bg:#3a1d19;--warn:#f6b26b;--warn-bg:#3a2a17;
+}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+.wrap{max-width:1100px;margin:0 auto;padding:32px 16px 64px}
+h1{font-size:28px;margin:0 0 4px;letter-spacing:-.01em}
+h2{font-size:18px;margin:34px 0 10px}
+.sub{color:var(--muted);font-size:13px}
+.alert{background:var(--warn-bg);border:1px solid var(--line);border-left:4px solid var(--warn);border-radius:10px;padding:14px 16px;margin:22px 0}
+.alert b{color:var(--warn)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+a.card{display:flex;flex-direction:column;gap:8px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px;color:inherit;text-decoration:none;transition:border-color .15s,transform .15s}
+a.card:hover{border-color:var(--accent);transform:translateY(-1px)}
+.card .dept{font-weight:650;font-size:17px}
+.card .amt{font-size:26px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.card .row{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.card .var{font-weight:600}
+.good{color:var(--ok)}.bad{color:var(--bad)}
+.card .note{font-size:13px;color:var(--muted);flex:1}
+.card .foot{display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--line);padding-top:10px;font-size:13px}
+.card .go{color:var(--accent);font-weight:600}
+.pill{font-size:12px;border-radius:999px;padding:1px 8px;background:var(--soft);color:var(--muted)}
+.pill.on{background:var(--bad-bg);color:var(--bad);font-weight:600}
+table{width:100%;border-collapse:collapse;background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden;font-size:14px}
+th,td{padding:9px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{background:var(--soft);font-size:12px;color:var(--muted);font-weight:600}
+tr:last-child td{border-bottom:0}
+td a{color:var(--accent);text-decoration:none;white-space:nowrap}
+.scroll{overflow-x:auto;border-radius:12px}
+.footer{margin-top:30px;font-size:12px;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Q1 Expense Reports</h1>
+  <div class="sub">Your Mates Brewing Co. · Q1 FY27 (Jul–Sep 2026) · All figures ex-GST from Xero, against the Your Mates Xero File Budget</div>
+
+  <div class="alert"><b>Before sharing Q1 profit:</b> Q1 cost of goods isn't fully booked yet. There's no brewing materials cost, no September excise, almost no Container Refund Scheme cost and no depreciation, likely $400k+ in total. Operations and Shared Expenses look under budget mainly because of this.</div>
+
+  <h2>Department reports</h2>
+  <div class="grid" id="cards"></div>
+
+  <h2>Top items to action across departments</h2>
+  <div class="scroll"><table>
+    <tr><th>Department</th><th>Issue</th><th class="n">Amount</th><th></th></tr>
+    <tr><td>Operations</td><td>Brewing materials, September excise and QLD Container Refund Scheme not booked for Q1</td><td>$400k+</td><td><a href="Operations-Expense-Report-Q1-FY27.html">Open →</a></td></tr>
+    <tr><td>Shared Expenses</td><td>No depreciation booked in Q1 (last year ~$94k a quarter)</td><td>~$94k</td><td><a href="Shared-Expenses-Report-Q1-FY27.html">Open →</a></td></tr>
+    <tr><td>Sales</td><td>Sunshine Coast Lightning invoice for FY26 games booked in July (cut-off)</td><td>$28.9k</td><td><a href="Sales-Expense-Report-Q1-FY27.html">Open →</a></td></tr>
+    <tr><td>Shared Expenses</td><td>Payroll tax: FY26 refund nets Q1 to a credit; July paid twice</td><td>$27.6k</td><td><a href="Shared-Expenses-Report-Q1-FY27.html">Open →</a></td></tr>
+    <tr><td>Shared Expenses</td><td>Management wages in an account with no department</td><td>$25.5k</td><td><a href="Shared-Expenses-Report-Q1-FY27.html">Open →</a></td></tr>
+    <tr><td>Shared Expenses</td><td>CBA trade-loan interest journal – check which months it covers</td><td>$22.9k</td><td><a href="Shared-Expenses-Report-Q1-FY27.html">Open →</a></td></tr>
+    <tr><td>Sales</td><td>Event revenue booked as negative expense (Eatons Hill, Brewoomba)</td><td>$5.2k</td><td><a href="Sales-Expense-Report-Q1-FY27.html">Open →</a></td></tr>
+    <tr><td>Brew Pub</td><td>Extra RWC rent invoice on 15 Sep, on top of normal rent</td><td>$5.2k</td><td><a href="Brew-Pub-Expense-Report-Q1-FY27.html">Open →</a></td></tr>
+    <tr><td>Sales</td><td>28 Sep pay run: annual leave paid on top of a full week</td><td>$2.7k</td><td><a href="Sales-Expense-Report-Q1-FY27.html">Open →</a></td></tr>
+    <tr><td>Operations</td><td>Fourth Beer30 subscription charge in one quarter – possible duplicate</td><td>$2.6k</td><td><a href="Operations-Expense-Report-Q1-FY27.html">Open →</a></td></tr>
+    <tr><td>Brew Pub / Shared</td><td>Annual liquor licence fee booked in both Brew Pub and Shared</td><td>$833</td><td><a href="Brew-Pub-Expense-Report-Q1-FY27.html">Open →</a></td></tr>
+  </table></div>
+
+  <p class="footer">Each report lists every Q1 transaction with a “Please action” tick box and notes. Ticks and notes save in your own browser; the red counts above show what you've ticked in each report on this device. Use “Save copy with notes” in a report to share a version with your notes included. Data pulled from Xero on 1–2 Nov 2026. Your Mates Bowls Pub is a separate Xero file and isn't included.</p>
+</div>
+<script>
+const REPORTS=[
+ {dept:"Sales",file:"Sales-Expense-Report-Q1-FY27.html",key:"ymb-sales-q1fy27-v1-orig",q1:143318,bud:195343,py:138198,
+  note:"Underlying $114.4k excl. a $28.9k FY26 Lightning invoice. Event revenue booked as expense; overlapping software."},
+ {dept:"Brew Pub",file:"Brew-Pub-Expense-Report-Q1-FY27.html",key:"ymb-brewpub-q1fy27-v1-orig",q1:133003,bud:126541,py:122481,
+  note:"Operating expenses only (no cost of sales). Rent +$13.1k; music, equipment and print over budget."},
+ {dept:"Operations",file:"Operations-Expense-Report-Q1-FY27.html",key:"ymb-ops-q1fy27-v1-orig",q1:614038,bud:1181874,py:1187681,
+  note:"Production + Logistics. Under budget only because Q1 cost of goods isn't fully booked."},
+ {dept:"Shared Expenses",file:"Shared-Expenses-Report-Q1-FY27.html",key:"ymb-shared-q1fy27-v1-orig",q1:210671,bud:233588,py:341809,
+  note:"Incl. management wages and overheads. Interest $42.3k (vs $4.7k); no depreciation booked."}
+];
+const k=v=>'$'+(v/1000).toLocaleString('en-AU',{minimumFractionDigits:1,maximumFractionDigits:1})+'k';
+function count(key){try{const s=JSON.parse(localStorage.getItem(key)||'{}');return Object.values(s).filter(x=>x&&x.a).length;}catch(e){return 0;}}
+document.getElementById('cards').innerHTML=REPORTS.map(r=>{
+  const v=r.q1-r.bud, py=(r.q1-r.py)/r.py*100, n=count(r.key);
+  return `<a class="card" href="${r.file}">
+    <div class="dept">${r.dept}</div>
+    <div class="amt">${k(r.q1)}</div>
+    <div class="row"><span>Budget ${k(r.bud)}</span><span class="var ${v>0?'bad':'good'}">${k(Math.abs(v))} ${v>0?'over':'under'}</span></div>
+    <div class="row"><span>Q1 FY26 ${k(r.py)}</span><span class="var">${py>=0?'+':''}${py.toFixed(0)}%</span></div>
+    <div class="note">${r.note}</div>
+    <div class="foot"><span class="pill${n?' on':''}">${n?n+' to action':'Nothing ticked yet'}</span><span class="go">Open report →</span></div>
+  </a>`;}).join('');
+</script>
+</body>
+</html>
