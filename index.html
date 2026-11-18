@@ -70,7 +70,7 @@ const REPORTS=[
   note:"Operating expenses only. Related-party rent $23.6k over budget after new FY27 outgoings; no insurance premium or depreciation booked."}
 ];
 const k=v=>'$'+(v/1000).toLocaleString('en-AU',{minimumFractionDigits:1,maximumFractionDigits:1})+'k';
-function count(key){try{const s=JSON.parse(localStorage.getItem(key)||'{}');return Object.values(s).filter(x=>x&&x.a).length;}catch(e){return 0;}}
+function count(key){try{const s=JSON.parse(localStorage.getItem(key)||'{}');return Object.values(s).filter(x=>x&&x.a&&!x.d).length;}catch(e){return 0;}}
 document.getElementById('cards').innerHTML=REPORTS.map(r=>{
   const v=r.q1-r.bud, py=(r.q1-r.py)/r.py*100, n=count(r.key);
   return `<a class="card" href="${r.file}">
@@ -79,7 +79,7 @@ document.getElementById('cards').innerHTML=REPORTS.map(r=>{
     <div class="row"><span>Budget ${k(r.bud)}</span><span class="var ${v>0?'bad':'good'}">${k(Math.abs(v))} ${v>0?'over':'under'}</span></div>
     <div class="row"><span>Q1 FY26 ${k(r.py)}</span><span class="var">${py>=0?'+':''}${py.toFixed(0)}%</span></div>
     <div class="note">${r.note}</div>
-    <div class="foot"><span class="pill${n?' on':''}">${n?n+' to action':'Nothing ticked yet'}</span><span class="go">Open report →</span></div>
+    <div class="foot"><span class="pill${n?' on':''}">${n?n+' open action'+(n>1?'s':''):'No open actions'}</span><span class="go">Open report →</span></div>
   </a>`;}).join('');
 </script>
 </body>

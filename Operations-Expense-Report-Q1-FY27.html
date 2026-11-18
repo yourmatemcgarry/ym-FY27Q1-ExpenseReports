@@ -53,13 +53,23 @@ td.n,th.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
 tr.total td{font-weight:650;background:var(--soft)}
 tr.actioned td{background:var(--act-bg)}
 tr.actioned td:first-child{box-shadow:inset 3px 0 0 var(--act)}
-td.act{width:92px;white-space:nowrap}
+td.act{width:150px;white-space:nowrap}
+.act select.who{font:12px/1.2 inherit;font-family:inherit;color:var(--muted);background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:4px 4px;max-width:140px;cursor:pointer}
+tr.actioned .act select.who{color:var(--act);border-color:var(--act);font-weight:600}
+tr.done .act select.who{color:var(--ok);border-color:var(--ok)}
+.act .dn{margin-top:5px}
+.act .dn[hidden]{display:none}
+.act .dt{display:block;font-size:11px;color:var(--ok);margin-top:2px;white-space:normal}
+tr.done td{background:var(--ok-bg)}
+tr.done td:first-child{box-shadow:inset 3px 0 0 var(--ok)}
+tr.done .act .dn{color:var(--ok);font-weight:600}
+.whof{font:inherit;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:6px 8px;cursor:pointer}
 td.note{min-width:150px;width:13%}
 .notenames{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:-4px 0 18px;font-size:13px;color:var(--muted)}
 .notenames input{font:inherit;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:7px;padding:5px 8px;width:150px}
 th.nh{min-width:150px}
 .act label{display:inline-flex;gap:5px;align-items:center;cursor:pointer;font-size:12px;color:var(--muted)}
-.act input{width:16px;height:16px;accent-color:var(--act);cursor:pointer}
+.act input{width:16px;height:16px;accent-color:var(--ok);cursor:pointer}
 tr.actioned .act label{color:var(--act);font-weight:600}
 textarea.nt{width:100%;min-height:30px;resize:vertical;border:1px solid transparent;border-radius:6px;background:transparent;color:var(--ink);font:12px/1.4 inherit;font-family:inherit;padding:5px 6px}
 textarea.nt:hover{border-color:var(--line)}
@@ -104,9 +114,11 @@ details.acct .anote{padding:0 12px 8px;color:var(--muted);font-size:13px}
     <div class="seg" id="view">
       <button data-v="all" class="on">All</button>
       <button data-v="flagged">Flagged</button>
-      <button data-v="action">Please action <span id="cnt2"></span></button>
+      <button data-v="action">Open actions <span id="cnt2"></span></button>
+      <button data-v="done">Done <span id="cnt3"></span></button>
       <button data-v="notes">With notes</button>
     </div>
+    <select class="whof" id="whof" aria-label="Show actions assigned to"></select>
     <span class="count" id="cnt"></span>
     <button class="btn" id="expand">Expand all</button>
     <button class="btn" id="csv">Export action list (CSV)</button>
@@ -114,7 +126,7 @@ details.acct .anote{padding:0 12px 8px;color:var(--muted);font-size:13px}
     <button class="btn" onclick="window.print()">Print</button>
     <span class="saved" id="saved"></span>
   </div>
-  <div class="notenames noprint"><b>Note columns:</b> <input id="nn0" aria-label="Name for note column 1"> <input id="nn1" aria-label="Name for note column 2"> <input id="nn2" aria-label="Name for note column 3"> <span>Type each person's name – their notes go in their own column. Names are shared across all the Q1 reports on this device.</span></div>
+  <div class="notenames noprint"><b>Reviewers:</b> <input id="nn0" aria-label="Name for note column 1"> <input id="nn1" aria-label="Name for note column 2"> <input id="nn2" aria-label="Name for note column 3"> <span>Type each person's name. Each person gets their own notes column, and actions can be assigned to them. Names are shared across all the Q1 reports on this device.</span></div>
 
   <h2>Cost of goods (volume-driven)</h2>
   <p class="sub">Excise, Container Refund Scheme and Brewing Materials move with volume, so they're compared with last year rather than judged against budget. On 9 Nov the Q1 COGS journals were corrected to remove GST: Beer30 stores stock at landed cost <i>including GST</i>, so cans, kegs and merch were divided by 1.1 (materials −$28.6k). Q1 cost of goods is $662.1k vs $739.5k in Q1 FY26 (−10%) while excise (volume) is down 13%. Materials are 80% of excise vs 74% a year ago; cost per carton is up about 1.4% on Q4 ($10.78 → $10.93).</p>
@@ -182,6 +194,10 @@ if(typeof IDMAP!=='undefined'&&!state._m2){const ns={_m2:1};let moved=0;
   state=ns;}
 const st=id=>state[id]||(state[id]={a:false,n:""});
 const NF=['n','n2','n3'];
+const isOpen=s=>!!s&&!!s.a&&!s.d;
+const isDone=s=>!!s&&!!s.a&&!!s.d;
+const whoIdx=s=>s&&s.a&&s.w!=null&&s.w!==''?Number(s.w):-1;
+const whoName=s=>{const i=whoIdx(s);return i<0?'Unassigned':(NAMES[i]||('Person '+(i+1)));};
 const hasNote=s=>!!s&&NF.some(f=>(s[f]||'').trim());
 const allNotes=s=>s?NF.map(f=>s[f]||'').join(' '):'';
 const NKEY='ymb-q1fy27-note-names';
@@ -197,17 +213,20 @@ const pct=(a,b)=>{if(b===0)return a===0?'–':'new';if((a<0)!==(b<0))return 'n/m
 function badgeClass(f){const s=f.toLowerCase();if(s.startsWith('fix'))return 'b-fix';if(s.startsWith('check'))return 'b-check';if(s.startsWith('price'))return 'b-price';if(s.startsWith('cut')||s.startsWith('high'))return 'b-cut';if(s.startsWith('no receipt'))return 'b-rcpt';return 'b-info';}
 function badges(f){if(!f)return '';return f.split(/;\s*/).map(p=>`<span class="badge ${badgeClass(p)}">${esc(p)}</span>`).join(' ');}
 function actCells(id){const s=state[id]||{a:false,n:''};
-  return `<td class="act"><label><input type="checkbox" data-id="${id}" ${s.a?'checked':''}> Please action</label></td>`+
+  const w=s.a?(whoIdx(s)<0?'u':String(whoIdx(s))):'';
+  const opts=[['','No action'],['u','Action – unassigned']].concat(NAMES.map((n,i)=>[String(i),'Action – '+(n||('Person '+(i+1)))]));
+  return `<td class="act"><select class="who" data-id="${id}" aria-label="Assign action">${opts.map(o=>`<option value="${o[0]}"${o[0]===w?' selected':''}>${esc(o[1])}</option>`).join('')}</select>`+
+    `<label class="dn"${s.a?'':' hidden'}><input type="checkbox" class="dnc" data-id="${id}" ${s.d?'checked':''}> Done</label><span class="dt">${s.d&&s.dd?esc('Ticked '+s.dd+(s.db?' by '+s.db:'')):''}</span></td>`+
          NF.map((f,i)=>`<td class="note"><textarea class="nt${s[f]?' has':''}" data-id="${id}" data-f="${f}" rows="1" placeholder="${esc(NAMES[i]||'')} note…">${esc(s[f]||'')}</textarea></td>`).join('');}
 const ROWMETA={};
 
 /* ---------- RENDER ---------- */
 function renderKPIs(){
-  const k=CONFIG.kpis.concat([["Please action","<span id='kact'>0</span>","items ticked in this report"]]);
+  const k=CONFIG.kpis.concat([["Open actions","<span id='kact'>0</span>","<span id='kactd'>0 done</span>"]]);
   document.getElementById('kpis').innerHTML=k.map(x=>`<div class="kpi"><div class="l">${x[0]}</div><div class="v">${x[1]}</div><div class="d">${x[2]}</div></div>`).join('');
 }
 function renderSummary(el='summary',DATA=SUMMARY,pfx='s'){
-  let h=`<tr><th>Account</th><th class="n">Q1 FY27 ($)</th><th class="n">Q4 FY26 ($)</th><th class="n">vs Q4</th><th class="n">Q1 FY26 ($)</th><th class="n">vs Q1 FY26</th><th class="n">Budget ($)</th><th class="n">Over / (under) ($)</th><th>Action</th>${NH()}</tr>`;
+  let h=`<tr><th>Account</th><th class="n">Q1 FY27 ($)</th><th class="n">Q4 FY26 ($)</th><th class="n">vs Q4</th><th class="n">Q1 FY26 ($)</th><th class="n">vs Q1 FY26</th><th class="n">Budget ($)</th><th class="n">Over / (under) ($)</th><th>Action / assigned to</th>${NH()}</tr>`;
   const T=[0,0,0,0];
   DATA.forEach((r,i)=>{const id=pfx+i;const [a,c,p,y,b]=r;T[0]+=c;T[1]+=p;T[2]+=y;T[3]+=b;const v=c-b;
     ROWMETA[id]={sec:'Summary',acct:a,desc:a,amt:c,flag:''};
@@ -216,7 +235,7 @@ function renderSummary(el='summary',DATA=SUMMARY,pfx='s'){
   document.getElementById(el).innerHTML=h;
 }
 function renderSimple(el,head,rows,prefix,sec,amtIdx,map){
-  let h='<tr>'+head.map((x,i)=>`<th${i===amtIdx?' class="n"':''}>${x}</th>`).join('')+'<th>Action</th>'+NH()+'</tr>';
+  let h='<tr>'+head.map((x,i)=>`<th${i===amtIdx?' class="n"':''}>${x}</th>`).join('')+'<th>Action / assigned to</th>'+NH()+'</tr>';
   rows.forEach((r,i)=>{const id=prefix+i;ROWMETA[id]=map(r);
     h+=`<tr data-row="${id}" data-flag="1" data-text="${esc(r.join(' ').toLowerCase())}">`+r.map((c,j)=>`<td${j===amtIdx?' class="n"':''}>${j===amtIdx&&typeof c==='number'?money(c):esc(c)}</td>`).join('')+actCells(id)+'</tr>';});
   document.getElementById(el).innerHTML=h;
@@ -224,7 +243,7 @@ function renderSimple(el,head,rows,prefix,sec,amtIdx,map){
 function renderAccts(){
   let h='',lastG=null;
   ACCTS.forEach((acc,ai)=>{const [name,total,note,rows]=acc;const grp=acc[4];if(grp&&grp!==lastG){h+=`<h3 style="margin:22px 0 4px;font-size:16px">${esc(grp)}</h3>`;lastG=grp;}const flagged=rows.filter(r=>r[5]).length;
-    let t=`<tr><th>Date</th><th>Type</th><th>Description</th><th>Ref</th><th class="n">Amount ($)</th><th>Flag</th><th>Action</th>${NH()}</tr>`;
+    let t=`<tr><th>Date</th><th>Type</th><th>Description</th><th>Ref</th><th class="n">Amount ($)</th><th>Flag</th><th>Action / assigned to</th>${NH()}</tr>`;
     rows.forEach((r,ri)=>{const id='t'+ai+'_'+ri;ROWMETA[id]={sec:'Transactions',acct:name,date:r[0],desc:r[2],ref:r[3],amt:r[4],flag:r[5]};
       t+=`<tr data-row="${id}" ${r[5]?'data-flag="1"':''} data-text="${esc((name+' '+r.join(' ')).toLowerCase())}"><td style="white-space:nowrap">${esc(r[0])}</td><td>${esc(r[1])}</td><td>${esc(r[2])}</td><td>${esc(r[3])}</td><td class="n">${money(r[4])}</td><td>${badges(r[5])}</td>${actCells(id)}</tr>`;});
     h+=`<details class="acct" data-acct="${ai}"><summary><h3>${esc(name)}</h3><span class="pill">${rows.length} transaction${rows.length>1?'s':''}</span>${flagged?`<span class="pill f">${flagged} flagged</span>`:''}<span class="pill a hide" data-acnt="${ai}"></span><span class="amt">$${money(total)}</span></summary>${note?`<div class="anote">${esc(note)}</div>`:''}<div class="scroll"><table>${t}</table></div></details>`;});
@@ -232,13 +251,15 @@ function renderAccts(){
 }
 
 /* ---------- FILTERS & COUNTS ---------- */
-let view='all';
+let view='all',whof='all';
 function applyFilter(){
   const q=document.getElementById('q').value.trim().toLowerCase();
   document.querySelectorAll('tr[data-row]').forEach(tr=>{const id=tr.dataset.row;const s=state[id]||{};
     let ok=true;
     if(view==='flagged')ok=!!tr.dataset.flag;
-    if(view==='action')ok=!!s.a;
+    if(view==='action')ok=isOpen(s);
+    if(view==='done')ok=isDone(s);
+    if(ok&&whof!=='all'){ok=!!s.a&&(whof==='u'?whoIdx(s)<0:whoIdx(s)===Number(whof));}
     if(view==='notes')ok=hasNote(s);
     if(ok&&q)ok=tr.dataset.text.includes(q)||allNotes(s).toLowerCase().includes(q);
     tr.classList.toggle('hide',!ok);});
@@ -246,24 +267,40 @@ function applyFilter(){
 }
 function refreshCounts(){
   let n=0;const per={};
-  Object.entries(state).forEach(([id,s])=>{if(s&&s.a){n++;const m=id.match(/^t(\d+)_/);if(m)per[m[1]]=(per[m[1]]||0)+1;}});
-  document.getElementById('cnt').textContent=n?n+' to action':'';
+  let dn=0;const pw=[0,0,0],pu=[0];
+  Object.entries(state).forEach(([id,s])=>{if(isDone(s))dn++;if(isOpen(s)){n++;const i=whoIdx(s);if(i<0)pu[0]++;else pw[i]=(pw[i]||0)+1;const m=id.match(/^t(\d+)_/);if(m)per[m[1]]=(per[m[1]]||0)+1;}});
+  document.getElementById('cnt').textContent=n?n+' open action'+(n>1?'s':''):'';
   document.getElementById('cnt2').textContent=n?'('+n+')':'';
+  document.getElementById('cnt3').textContent=dn?'('+dn+')':'';
   const k=document.getElementById('kact');if(k)k.textContent=n;
-  document.querySelectorAll('[data-acnt]').forEach(p=>{const c=per[p.dataset.acnt]||0;p.textContent=c+' to action';p.classList.toggle('hide',!c);});
-  document.querySelectorAll('tr[data-row]').forEach(tr=>tr.classList.toggle('actioned',!!(state[tr.dataset.row]||{}).a));
+  const kd=document.getElementById('kactd');if(kd)kd.textContent=dn+' done · open: '+NAMES.map((x,i)=>(x||'Person '+(i+1))+' '+pw[i]).join(' · ');
+  const wf=document.getElementById('whof');if(wf){const o=[['all','All reviewers']].concat(NAMES.map((x,i)=>[String(i),(x||'Person '+(i+1))+' ('+pw[i]+' open)']),[['u','Unassigned ('+pu[0]+' open)']]);
+    wf.innerHTML=o.map(x=>`<option value="${x[0]}"${x[0]===whof?' selected':''}>${esc(x[1])}</option>`).join('');}
+  document.querySelectorAll('[data-acnt]').forEach(p=>{const c=per[p.dataset.acnt]||0;p.textContent=c+' open';p.classList.toggle('hide',!c);});
+  document.querySelectorAll('tr[data-row]').forEach(tr=>{const s=state[tr.dataset.row]||{};tr.classList.toggle('actioned',isOpen(s));tr.classList.toggle('done',isDone(s));});
 }
 
 /* ---------- EVENTS ---------- */
-document.addEventListener('change',e=>{if(e.target.matches('input[type=checkbox][data-id]')){st(e.target.dataset.id).a=e.target.checked;persist();if(view!=='all')applyFilter();}});
+document.addEventListener('change',e=>{const t=e.target;
+  if(t.matches('select.who[data-id]')){const s=st(t.dataset.id);const v=t.value;
+    if(v===''){s.a=false;delete s.w;delete s.d;delete s.dd;delete s.db;}
+    else{s.a=true;s.w=v==='u'?null:Number(v);}
+    const td=t.closest('td');td.querySelector('.dn').hidden=!s.a;if(!s.a){td.querySelector('.dnc').checked=false;td.querySelector('.dt').textContent='';}
+    persist();if(view!=='all'||whof!=='all')applyFilter();}
+  else if(t.matches('input.dnc[data-id]')){const s=st(t.dataset.id);s.d=t.checked;
+    if(s.d){const d=new Date();s.dd=d.toLocaleDateString('en-AU',{day:'numeric',month:'short'});s.db=whoIdx(s)<0?'':whoName(s);}else{delete s.dd;delete s.db;}
+    t.closest('td').querySelector('.dt').textContent=s.d?'Ticked '+s.dd+(s.db?' by '+s.db:''):'';
+    persist();if(view!=='all')applyFilter();}
+  else if(t.id==='whof'){whof=t.value;applyFilter();}
+});
 document.addEventListener('input',e=>{if(e.target.matches('textarea.nt')){const t=e.target;st(t.dataset.id)[t.dataset.f||'n']=t.value;t.classList.toggle('has',!!t.value);t.style.height='auto';t.style.height=t.scrollHeight+'px';clearTimeout(t._tm);t._tm=setTimeout(persist,300);}});
 document.getElementById('view').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;view=b.dataset.v;document.querySelectorAll('#view button').forEach(x=>x.classList.toggle('on',x===b));applyFilter();});
 document.getElementById('q').addEventListener('input',applyFilter);
 document.getElementById('expand').addEventListener('click',e=>{const ds=[...document.querySelectorAll('details.acct')];const open=!ds.every(d=>d.open);ds.forEach(d=>d.open=open);e.target.textContent=open?'Collapse all':'Expand all';});
 document.getElementById('csv').addEventListener('click',()=>{
-  const rows=[["Section","Account","Date","Description","Ref","Amount","Flag","Please action",...NAMES.map((n,i)=>"Notes – "+(n||("Person "+(i+1))))]];
+  const rows=[["Section","Account","Date","Description","Ref","Amount","Flag","Action","Assigned to","Done","Done date",...NAMES.map((n,i)=>"Notes – "+(n||("Person "+(i+1))))]];
   Object.entries(state).forEach(([id,s])=>{if(!s||(!s.a&&!hasNote(s)))return;const m=ROWMETA[id];if(!m)return;
-    rows.push([m.sec,m.acct||'',m.date||'',m.desc||'',m.ref||'',m.amt??'',m.flag||'',s.a?'Yes':'',s.n||'',s.n2||'',s.n3||'']);});
+    rows.push([m.sec,m.acct||'',m.date||'',m.desc||'',m.ref||'',m.amt??'',m.flag||'',s.a?'Yes':'',s.a?whoName(s):'',s.d?'Yes':'',s.dd||'',s.n||'',s.n2||'',s.n3||'']);});
   const csv=rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\r\n');
   const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['﻿'+csv],{type:'text/csv'}));a.download=CONFIG.title+' - action list.csv';a.click();
 });
@@ -282,7 +319,8 @@ document.getElementById('savecopy').addEventListener('click',()=>{
 NAMES.forEach((n,i)=>{const el=document.getElementById('nn'+i);if(!el)return;el.value=n;
   el.addEventListener('input',()=>{NAMES[i]=el.value;try{localStorage.setItem(NKEY,JSON.stringify(NAMES));}catch(e){}
     document.querySelectorAll(`th[data-nh="${i}"]`).forEach(th=>th.textContent='Notes – '+(el.value||('Person '+(i+1))));
-    document.querySelectorAll(`textarea.nt[data-f="${NF[i]}"]`).forEach(t=>t.placeholder=(el.value||'')+' note…');});});
+    document.querySelectorAll(`textarea.nt[data-f="${NF[i]}"]`).forEach(t=>t.placeholder=(el.value||'')+' note…');
+    document.querySelectorAll(`select.who option[value="${i}"]`).forEach(o=>o.textContent='Action – '+(el.value||('Person '+(i+1))));refreshCounts();});});
 /* ---------- INIT ---------- */
 renderKPIs();renderSummary();if(SUMMARY_COGS.length)renderSummary('summary_cogs',SUMMARY_COGS,'sc');
 renderSimple('issues',['Date','Account','Transaction','Amount ($)','Issue','Suggested fix'],ISSUES,'i','Incorrect / missing',3,r=>({sec:'Incorrect / missing',acct:r[1],date:r[0],desc:r[2],amt:r[3],flag:r[4]+' → '+r[5]}));
