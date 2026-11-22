@@ -70,17 +70,31 @@ const REPORTS=[
   note:"Operating expenses only. Related-party rent $23.6k over budget after new FY27 outgoings; no insurance premium or depreciation booked."}
 ];
 const k=v=>'$'+(v/1000).toLocaleString('en-AU',{minimumFractionDigits:1,maximumFractionDigits:1})+'k';
-function count(key){try{const s=JSON.parse(localStorage.getItem(key)||'{}');return Object.values(s).filter(x=>x&&x.a&&!x.d).length;}catch(e){return 0;}}
+const lsGet=k=>{try{return JSON.parse(localStorage.getItem(k)||'null');}catch(e){return null;}};
+// Actions = notes saved inside the report file ("Save copy with notes") + anything this browser has added since.
+async function tally(r){
+  const base=r.key.replace(/orig$/,'');let emb={};
+  try{const h=await fetch(r.file,{cache:'no-store'}).then(x=>x.ok?x.text():'');
+    const m=h.match(/<script id="saved-state" type="application\/json">([\s\S]*?)<\/script>/);if(m)emb=JSON.parse(m[1])||{};}catch(e){}
+  let state=Object.assign({},emb.items||{});
+  let ls=lsGet(base+(emb._savedAt||'orig'));
+  if(!ls&&!emb._savedAt){// opened from a folder on this computer: use the newest copy this browser has saved
+    try{const ks=Object.keys(localStorage).filter(k=>k.startsWith(base)).sort();if(ks.length)ls=lsGet(ks[ks.length-1]);}catch(e){}}
+  if(ls)state=Object.assign(state,ls);
+  const v=Object.values(state);return {open:v.filter(x=>x&&x.a&&!x.d).length,done:v.filter(x=>x&&x.a&&x.d).length};
+}
+function pillText(t){if(!t)return 'Checking actions…';const o=t.open?t.open+' open action'+(t.open>1?'s':''):'No open actions';return t.done?o+' · '+t.done+' done':o;}
 document.getElementById('cards').innerHTML=REPORTS.map(r=>{
-  const v=r.q1-r.bud, py=(r.q1-r.py)/r.py*100, n=count(r.key);
+  const v=r.q1-r.bud, py=(r.q1-r.py)/r.py*100;
   return `<a class="card" href="${r.file}">
     <div class="dept">${r.dept}</div>
     <div class="amt">${k(r.q1)}</div>
     <div class="row"><span>Budget ${k(r.bud)}</span><span class="var ${v>0?'bad':'good'}">${k(Math.abs(v))} ${v>0?'over':'under'}</span></div>
     <div class="row"><span>Q1 FY26 ${k(r.py)}</span><span class="var">${py>=0?'+':''}${py.toFixed(0)}%</span></div>
     <div class="note">${r.note}</div>
-    <div class="foot"><span class="pill${n?' on':''}">${n?n+' open action'+(n>1?'s':''):'No open actions'}</span><span class="go">Open report →</span></div>
+    <div class="foot"><span class="pill" data-key="${r.key}">${pillText(null)}</span><span class="go">Open report →</span></div>
   </a>`;}).join('');
+REPORTS.forEach(async r=>{const t=await tally(r);const el=document.querySelector(`.pill[data-key="${r.key}"]`);if(el){el.textContent=pillText(t);el.classList.toggle('on',t.open>0);}});
 </script>
 </body>
 </html>
